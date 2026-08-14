@@ -92,11 +92,14 @@ function generateIncidentPDF(complaint) {
       doc.fillColor('#475569').fontSize(10).font('Helvetica-Bold').text(`2. CITIZEN ORIGINAL VOICE / TEXT TRANSCRIPT (${complaint.detected_language || 'Native'}):`, 50, origTop + 8);
       doc.fillColor('#334155').fontSize(9).font('Helvetica-Oblique').text(`"${cleanOriginalNote}"`, 50, origTop + 24, { width: 495 });
 
-      // --- Section 3: AI DIRECTIVE & ACTION SUMMARY ---
+      // --- Section 3: AI BRIEF PROBLEM ANALYSIS & EXECUTIVE FIELD DIRECTIVE ---
       const summaryTop = origTop + 75;
-      doc.rect(40, summaryTop, 515, 75).fill('#EFF6FF').stroke('#BFDBFE');
-      doc.fillColor('#1E40AF').fontSize(10).font('Helvetica-Bold').text('3. AI EXECUTIVE SUMMARY & FIELD DIRECTIVE:', 50, summaryTop + 8);
-      doc.fillColor('#1E293B').fontSize(9.5).font('Helvetica').text(cleanSummary || 'Immediate inspection and field action required.', 50, summaryTop + 24, { width: 495, leading: 1.4 });
+      doc.rect(40, summaryTop, 515, 80).fill('#EFF6FF').stroke('#BFDBFE');
+      doc.fillColor('#1E40AF').fontSize(10).font('Helvetica-Bold').text('3. AI BRIEF PROBLEM ANALYSIS & EXECUTIVE FIELD DIRECTIVE:', 50, summaryTop + 8);
+      
+      const detailedAnalysis = `ANALYZED ISSUE: "${cleanEnglishTrans}"\nDEPARTMENT ALLOCATION: ${complaint.category_name || 'Public Infrastructure'} (Severity: ${sevUpper})\nEXECUTIVE ACTION DIRECTIVE: ${cleanSummary || 'Immediate field inspection, emergency repair crew dispatch, and status update on e-Governance portal required.'}`;
+
+      doc.fillColor('#1E293B').fontSize(9).font('Helvetica').text(detailedAnalysis, 50, summaryTop + 24, { width: 495, leading: 1.35 });
 
       // --- Section 4: GPS LOCATION & FIELD METRICS ---
       const mapTop = summaryTop + 85;

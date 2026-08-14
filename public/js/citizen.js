@@ -122,6 +122,74 @@ const locationData = {
   }
 };
 
+const locationTranslations = {
+  // States
+  "Andhra Pradesh": { te: "ఆంధ్రప్రదేశ్", hi: "आंध्र प्रदेश", ta: "ஆந்திரப் பிரதேசம்", kn: "ಆಂಧ್ರಪ್ರದೇಶ" },
+  "Telangana": { te: "తెలంగాణ", hi: "तेलंगाना", ta: "தெலுங்கானா", kn: "ತೆಲಂಗಾಣ" },
+  "Karnataka": { te: "కర్ణాటక", hi: "कर्नाटक", ta: "கர்நாடகா", kn: "ಕರ್ನಾಟಕ" },
+  "Tamil Nadu": { te: "తమిళనాడు", hi: "तमिलनाडु", ta: "தமிழ்நாடு", kn: "ತಮಿಳುನಾಡು" },
+
+  // Districts
+  "Chittoor": { te: "చిత్తూరు", hi: "चित्तूर", ta: "சித்தூர்", kn: "ಚಿತ್ತೂರು" },
+  "Tirupati": { te: "తిరుపతి", hi: "तिरुपति", ta: "திருப்பதி", kn: "ತಿರುಪತಿ" },
+  "Annamayya": { te: "అన్నమయ్య", hi: "अन्नमय्या", ta: "அன்னமய்யா", kn: "ಅನ್ನಮಯ್ಯ" },
+  "YSR Kadapa": { te: "వైఎస్సార్ కడప", hi: "कडपा", ta: "கடப்பா", kn: "ಕಡಪ" },
+  "Anantapur": { te: "అనంతపురం", hi: "अनंतपुर", ta: "அனந்தபூர்", kn: "ಅನಂತಪುರ" },
+  "Guntur": { te: "గుంటూరు", hi: "गुंटूर", ta: "குண்டூர்", kn: "గుంటూరు" },
+  "Visakhapatnam": { te: "విశాఖపట్నం", hi: "विशाखापट्टनम", ta: "விசாகப்பட்டினம்", kn: "ವಿಶಾಖಪಟ್ಟಣం" },
+  "Hyderabad": { te: "హైదరాబాద్", hi: "हैदराबाद", ta: "ஹைதராபாத்", kn: "ಹೈದರಾಬಾದ್" },
+  "Rangareddy": { te: "రంగారెడ్డి", hi: "रंगारेड्डी", ta: "ரங்காரெட்டி", kn: "ರಂಗಾರೆಡ್ಡಿ" },
+  "Warangal": { te: "వరంగల్", hi: "वरंगल", ta: "வரங்கல்", kn: "ವರಂಗಲ್" },
+  "Bengaluru Urban": { te: "బెంగళూరు అర్బన్", hi: "बेंगलुरु शहरी", ta: "பெங்களூரு", kn: "ಬೆಂಗಳೂರು ನಗರ" },
+  "Kolar": { te: "కోలార్", hi: "कोलार", ta: "கோலார்", kn: "ಕೋಲಾರ" },
+  "Chennai": { te: "చెన్నై", hi: "चेन्नई", ta: "சென்னை", kn: "ಚೆನ್ನೈ" },
+  "Tiruvallur": { te: "తిరువళ్లూరు", hi: "तिरुवल्लूर", ta: "திருவள்ளூர்", kn: "ತಿರುವಳ್ಳೂರು" },
+
+  // Mandals
+  "Penumur": { te: "పెనుమూరు", hi: "पेनुमूर", ta: "பெனுமூர்", kn: "ಪೆನುಮೂರು" },
+  "Kuppam": { te: "కుప్పం", hi: "कुप्पम", ta: "குப்பம்", kn: "ಕುಪ್ಪಂ" },
+  "Palamaner": { te: "పలమనేరు", hi: "पलमनेर", ta: "பலமனேர்", kn: "ಪಲಮನೇರು" },
+  "Bangarupalem": { te: "బంగారుపాళెం", hi: "बंजारुपालेम", ta: "பங்கருபாலையம்", kn: "ಬಂಗಾರುಪಾಳ್ಯಂ" },
+  "Chittoor Urban": { te: "చిత్తూరు అర్బన్", hi: "चित्तूर शहरी", ta: "சித்தூர் நகர்ப்புறம்", kn: "ಚಿತ್ತೂರು ನಗರ" },
+  "Chittoor Rural": { te: "చిత్తూరు రూరల్", hi: "चित्तूर ग्रामीण", ta: "சித்தூர் கிராமப்புறம்", kn: "చిತ್ತೂರು గ్రామీణ" },
+  "Gangadhara Nellore": { te: "గంగాధర నెల్లూరు", hi: "गंगाधर नेल्लोर", ta: "கங்காதர நெல்லூர்", kn: "గంగాధర నెల్లూరు" },
+  "Nagari": { te: "నగరి", hi: "नगरी", ta: "நகரி", kn: "నగరి" },
+  "Karvetinagar": { te: "కార్వేటినగరం", hi: "कार्वेटीनगर", ta: "கார்வேட்டிநகரம்", kn: "కార్వేటినగరం" },
+  "Tirupati Urban": { te: "తిరుపతి అర్బన్", hi: "तिरुपति शहरी", ta: "திருப்பதி நகர்ப்புறம்", kn: "ತಿರುಪತಿ ನಗರ" },
+  "Tirupati Rural": { te: "తిరుపతి రూరల్", hi: "तिरुपति ग्रामीण", ta: "திருப்பதி கிராமப்புறம்", kn: "ತಿರುపతి గ్రామీణ" },
+  "Chandragiri": { te: "చంద్రగిరి", hi: "चंद्रगिरि", ta: "சந்திரகிரி", kn: "చంద్రగిరి" },
+  "Renigunta": { te: "రేణిగుంట", hi: "रेणिगुंटा", ta: "ரேணிகுண்டா", kn: "రేణిగుంట" },
+  "Sri Kalahasti": { te: "శ్రీకాళహస్తి", hi: "श्रीकालहस्ती", ta: "ஸ்ரீ காளஹஸ்தி", kn: "శ్రీకాళహస్తి" },
+  "Puttur": { te: "పుత్తూరు", hi: "पुत्तूर", ta: "புத்தூர்", kn: "పుత్తూరు" },
+  "Madanapalle": { te: "మదనపల్లె", hi: "मदनपल्ले", ta: "மதனபல்லி", kn: "ಮದನಪಲ್ಲೆ" },
+  "Rayachoti": { te: "రాయచోటి", hi: "रायाचोटी", ta: "ராயச்சோட்டி", kn: "రాయచోటి" },
+  "Rajampet": { te: "రాజంపేట", hi: "राजमपेट", ta: "ராஜம்பேட்டை", kn: "రాజంపేట" },
+  "Pileru": { te: "పిలేరు", hi: "पिलेरू", ta: "பிலேரு", kn: "పిలేరు" },
+  "Khairatabad": { te: "ఖైరతాబాద్", hi: "खैरताबाद", ta: "கைரதாபாத்", kn: "ಖೈರತಾಬಾದ್" },
+  "Secunderabad": { te: "సికింద్రాబాద్", hi: "सिकंदराबाद", ta: "செகந்திராபாத்", kn: "ಸಿಿಕಂದರಾಬಾದ್" },
+  "Serilingampally": { te: "శేరిలింగంపల్లి", hi: "शेरिलिंगमपल्ली", ta: "சேரிலிங்கம்பள்ளி", kn: "ಶೇರಿಲಿಂಗಂಪಲ್ಲಿ" },
+
+  // Villages
+  "Sanjiviravanipalle": { te: "సంజీవిరాయనిపల్లె", hi: "संजीवरायानिपल्ले" },
+  "Virupakshapuram": { te: "విరూపాక్షపురం", hi: "विरुपाक्षापुरम" },
+  "Kalavagunta": { te: "కలవగుంట", hi: "कलवगुंटा" },
+  "Kondepalle": { te: "కొండెలపల్లె", hi: "कोंडेपल्ले" },
+  "Gullapalle": { te: "గుల్లాపల్లె", hi: "गुल्लापल्ले" },
+  "Nelavoy": { te: "నేలవోయ్", hi: "नेलवॉय" },
+  "Kangundi": { te: "కంగాంధి", hi: "कांगुंडी" },
+  "Rallabuduguru": { te: "రాళ్లబూదుగూరు", hi: "राल्लाबुदुगुरु" }
+};
+
+function getLocalizedLocationName(name) {
+  if (!name) return '';
+  const langCode = (localStorage.getItem('civic_user_bcp47') || currentSpeechLang || 'te-IN').split('-')[0];
+  const item = locationTranslations[name];
+  if (item && item[langCode]) {
+    return `${item[langCode]} (${name})`;
+  }
+  return name;
+}
+
 function initCascadingLocations() {
   const stateSel = document.getElementById('stateSelect');
   if (!stateSel) return;
@@ -130,7 +198,7 @@ function initCascadingLocations() {
   Object.keys(locationData).forEach(st => {
     const opt = document.createElement('option');
     opt.value = st;
-    opt.textContent = st;
+    opt.textContent = getLocalizedLocationName(st);
     stateSel.appendChild(opt);
   });
 
@@ -153,15 +221,16 @@ function onStateChanged() {
 
   if (selectedState && locationData[selectedState]) {
     distSel.disabled = false;
-    Object.keys(locationData[selectedState]).forEach(dst => {
+    const districts = Object.keys(locationData[selectedState]);
+    districts.forEach(dst => {
       const opt = document.createElement('option');
       opt.value = dst;
-      opt.textContent = dst;
+      opt.textContent = getLocalizedLocationName(dst);
       distSel.appendChild(opt);
     });
 
-    if (locationData[selectedState]['Chittoor']) {
-      distSel.value = 'Chittoor';
+    if (districts.length > 0) {
+      distSel.value = districts[0];
       onDistrictChanged();
     }
   } else {
@@ -186,18 +255,16 @@ function onDistrictChanged() {
   if (selectedState && selectedDist && locationData[selectedState]?.[selectedDist]) {
     mandalSel.disabled = false;
     const mandalsObj = locationData[selectedState][selectedDist];
-    Object.keys(mandalsObj).forEach(mnd => {
+    const mandals = Object.keys(mandalsObj);
+    mandals.forEach(mnd => {
       const opt = document.createElement('option');
       opt.value = mnd;
-      opt.textContent = mnd;
+      opt.textContent = getLocalizedLocationName(mnd);
       mandalSel.appendChild(opt);
     });
 
-    if (mandalsObj['Penumur']) {
-      mandalSel.value = 'Penumur';
-      onMandalChanged();
-    } else {
-      mandalSel.value = Object.keys(mandalsObj)[0];
+    if (mandals.length > 0) {
+      mandalSel.value = mandals[0];
       onMandalChanged();
     }
   } else {
@@ -218,7 +285,7 @@ function onMandalChanged() {
   const selectedMandal = mandalSel.value;
 
   if (mandalInp) mandalInp.value = selectedMandal;
-  villSel.innerHTML = '<option value="">-- Select Village --</option>';
+  villSel.innerHTML = '<option value="">-- Select Village / Locality --</option>';
 
   if (selectedState && selectedDist && selectedMandal && locationData[selectedState]?.[selectedDist]?.[selectedMandal]) {
     villSel.disabled = false;
@@ -226,7 +293,7 @@ function onMandalChanged() {
     villages.forEach(v => {
       const opt = document.createElement('option');
       opt.value = v;
-      opt.textContent = v;
+      opt.textContent = getLocalizedLocationName(v);
       villSel.appendChild(opt);
     });
 
