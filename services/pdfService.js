@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 /**
- * Generates an Official Government Incident Letter PDF Report (Zero Emoji, Clean Format)
+ * Generates an Official Government Incident Letter PDF Report (Dynamic Text Flow - Zero Overlap)
  */
 function generateIncidentPDF(complaint) {
   return new Promise((resolve, reject) => {
@@ -45,8 +45,6 @@ function generateIncidentPDF(complaint) {
          .font('Helvetica')
          .text('Governed under District Public Redressal Mechanism & e-Panchayat Portal', 50, 84, { align: 'center' });
 
-      doc.moveDown(3);
-
       // --- Letter Metadata Block ---
       const topY = 125;
       doc.fillColor('#1E293B').fontSize(10).font('Helvetica-Bold');
@@ -55,15 +53,12 @@ function generateIncidentPDF(complaint) {
       doc.text(`DATE & TIME: ${new Date(complaint.created_at || Date.now()).toLocaleString('en-IN')}`, 320, topY);
 
       // Severity Badge Box
-      let severityColor = '#059669'; // Green (MILD)
       const sevUpper = (complaint.severity || 'MILD').toUpperCase();
-      if (sevUpper === 'EMERGENCY') severityColor = '#DC2626'; // Red
-      if (sevUpper === 'MODERATE') severityColor = '#D97706'; // Amber
 
       doc.rect(40, topY + 18, 515, 2).fill('#CBD5E1');
 
       // --- Formal Letter To/From Block ---
-      const letterHeaderY = topY + 30;
+      const letterHeaderY = topY + 28;
       doc.fillColor('#334155').fontSize(10).font('Helvetica-Bold');
       doc.text('FROM:', 40, letterHeaderY);
       doc.font('Helvetica').fillColor('#0F172A').text('Public Grievance Redressal Cell, District Administration', 90, letterHeaderY);
@@ -75,55 +70,76 @@ function generateIncidentPDF(complaint) {
       doc.font('Helvetica').fillColor('#0F172A').text(`${complaint.village}, ${complaint.mandal} Mandal, ${complaint.district || 'Chittoor'} District`, 90, letterHeaderY + 32);
 
       // Formal Subject Line
-      const subjY = letterHeaderY + 54;
+      const subjY = letterHeaderY + 52;
       doc.rect(40, subjY, 515, 24).fill('#F1F5F9').stroke('#E2E8F0');
-      doc.fillColor('#0F3D3E').fontSize(10).font('Helvetica-Bold')
+      doc.fillColor('#0F3D3E').fontSize(9.5).font('Helvetica-Bold')
          .text(`SUBJECT: Official Action Directive for ${complaint.category_name || 'Grievance'} Issue (Priority: ${sevUpper})`, 50, subjY + 7);
 
+      // --- DYNAMIC Y COORDINATE CALCULATOR (PREVENTS ANY TEXT OVERLAP) ---
+      let currentY = subjY + 32;
+
       // --- Section 1: MANDATORY OFFICIAL ENGLISH TRANSLATION ---
-      const transTop = subjY + 35;
-      doc.rect(40, transTop, 515, 75).fill('#FFFFFF').stroke('#0F3D3E');
-      doc.fillColor('#0F3D3E').fontSize(10).font('Helvetica-Bold').text('1. OFFICIAL ENGLISH TRANSLATION OF CITIZEN GRIEVANCE LETTER:', 50, transTop + 8);
-      doc.fillColor('#1E293B').fontSize(9.5).font('Helvetica').text(`"${cleanEnglishTrans}"`, 50, transTop + 24, { width: 495, leading: 1.4 });
+      const sec1Title = '1. OFFICIAL ENGLISH TRANSLATION OF CITIZEN GRIEVANCE LETTER:';
+      const sec1Text = `"${cleanEnglishTrans}"`;
+      doc.font('Helvetica').fontSize(9);
+      const sec1TextHeight = doc.heightOfString(sec1Text, { width: 495, leading: 1.35 });
+      const sec1BoxHeight = Math.max(45, sec1TextHeight + 28);
+
+      doc.rect(40, currentY, 515, sec1BoxHeight).fill('#FFFFFF').stroke('#0F3D3E');
+      doc.fillColor('#0F3D3E').fontSize(9.5).font('Helvetica-Bold').text(sec1Title, 50, currentY + 7);
+      doc.fillColor('#1E293B').fontSize(9).font('Helvetica').text(sec1Text, 50, currentY + 22, { width: 495, leading: 1.35 });
+
+      currentY += sec1BoxHeight + 10;
 
       // --- Section 2: CITIZEN ORIGINAL TRANSCRIPT (NATIVE SCRIPT) ---
-      const origTop = transTop + 85;
-      doc.rect(40, origTop, 515, 65).fill('#F8FAFC').stroke('#E2E8F0');
-      doc.fillColor('#475569').fontSize(10).font('Helvetica-Bold').text(`2. CITIZEN ORIGINAL VOICE / TEXT TRANSCRIPT (${complaint.detected_language || 'Native'}):`, 50, origTop + 8);
-      doc.fillColor('#334155').fontSize(9).font('Helvetica-Oblique').text(`"${cleanOriginalNote}"`, 50, origTop + 24, { width: 495 });
+      const sec2Title = `2. CITIZEN ORIGINAL VOICE / TEXT TRANSCRIPT (${complaint.detected_language || 'Native'}):`;
+      const sec2Text = `"${cleanOriginalNote}"`;
+      doc.font('Helvetica-Oblique').fontSize(8.5);
+      const sec2TextHeight = doc.heightOfString(sec2Text, { width: 495 });
+      const sec2BoxHeight = Math.max(38, sec2TextHeight + 26);
+
+      doc.rect(40, currentY, 515, sec2BoxHeight).fill('#F8FAFC').stroke('#E2E8F0');
+      doc.fillColor('#475569').fontSize(9.5).font('Helvetica-Bold').text(sec2Title, 50, currentY + 7);
+      doc.fillColor('#334155').fontSize(8.5).font('Helvetica-Oblique').text(sec2Text, 50, currentY + 22, { width: 495 });
+
+      currentY += sec2BoxHeight + 10;
 
       // --- Section 3: AI BRIEF PROBLEM ANALYSIS & EXECUTIVE FIELD DIRECTIVE ---
-      const summaryTop = origTop + 75;
-      doc.rect(40, summaryTop, 515, 80).fill('#EFF6FF').stroke('#BFDBFE');
-      doc.fillColor('#1E40AF').fontSize(10).font('Helvetica-Bold').text('3. AI BRIEF PROBLEM ANALYSIS & EXECUTIVE FIELD DIRECTIVE:', 50, summaryTop + 8);
-      
-      const detailedAnalysis = `ANALYZED ISSUE: "${cleanEnglishTrans}"\nDEPARTMENT ALLOCATION: ${complaint.category_name || 'Public Infrastructure'} (Severity: ${sevUpper})\nEXECUTIVE ACTION DIRECTIVE: ${cleanSummary || 'Immediate field inspection, emergency repair crew dispatch, and status update on e-Governance portal required.'}`;
+      const sec3Title = '3. AI BRIEF PROBLEM ANALYSIS & EXECUTIVE FIELD DIRECTIVE:';
+      const detailedAnalysis = `ANALYZED ISSUE: "${cleanEnglishTrans}"\nDEPARTMENT ALLOCATION: ${complaint.category_name || 'Public Infrastructure'} (Severity: ${sevUpper})\nEXECUTIVE ACTION DIRECTIVE: ${cleanSummary || 'Immediate field inspection, emergency repair crew dispatch, and status update required.'}`;
 
-      doc.fillColor('#1E293B').fontSize(9).font('Helvetica').text(detailedAnalysis, 50, summaryTop + 24, { width: 495, leading: 1.35 });
+      doc.font('Helvetica').fontSize(8.5);
+      const sec3TextHeight = doc.heightOfString(detailedAnalysis, { width: 495, leading: 1.3 });
+      const sec3BoxHeight = Math.max(50, sec3TextHeight + 28);
+
+      doc.rect(40, currentY, 515, sec3BoxHeight).fill('#EFF6FF').stroke('#BFDBFE');
+      doc.fillColor('#1E40AF').fontSize(9.5).font('Helvetica-Bold').text(sec3Title, 50, currentY + 7);
+      doc.fillColor('#1E293B').fontSize(8.5).font('Helvetica').text(detailedAnalysis, 50, currentY + 22, { width: 495, leading: 1.3 });
+
+      currentY += sec3BoxHeight + 14;
 
       // --- Section 4: GPS LOCATION & FIELD METRICS ---
-      const mapTop = summaryTop + 85;
       const mapsUrl = `https://www.google.com/maps?q=${complaint.latitude},${complaint.longitude}`;
-      doc.fillColor('#0F3D3E').fontSize(10).font('Helvetica-Bold').text('4. GPS LOCATION & CONTACT DETAILS:', 40, mapTop);
-      doc.fillColor('#334155').fontSize(9).font('Helvetica')
-         .text(`Citizen Mobile: +91 ${complaint.citizen_mobile}  |  GPS Coordinates: ${complaint.latitude}, ${complaint.longitude}`, 40, mapTop + 16);
-      doc.fillColor('#2563EB').fontSize(9).font('Helvetica-Bold').text(`Google Maps Field Navigation: ${mapsUrl}`, 40, mapTop + 30, { link: mapsUrl, underline: true });
+      doc.fillColor('#0F3D3E').fontSize(9.5).font('Helvetica-Bold').text('4. GPS LOCATION & CONTACT DETAILS:', 40, currentY);
+      doc.fillColor('#334155').fontSize(8.5).font('Helvetica')
+         .text(`Citizen Mobile: +91 ${complaint.citizen_mobile}  |  GPS Coordinates: ${complaint.latitude}, ${complaint.longitude}`, 40, currentY + 14);
+      doc.fillColor('#2563EB').fontSize(8.5).font('Helvetica-Bold').text(`Google Maps Field Navigation: ${mapsUrl}`, 40, currentY + 26, { link: mapsUrl, underline: true });
 
-      // --- Official Signature & Stamp Box ---
-      const stampY = 690;
+      // --- Official Signature & Stamp Box (Fixed at bottom of page) ---
+      const stampY = 705;
       doc.strokeColor('#CBD5E1').lineWidth(1).moveTo(40, stampY).lineTo(555, stampY).stroke();
 
-      doc.rect(380, stampY + 10, 175, 55).stroke('#CBD5E1');
+      doc.rect(380, stampY + 8, 175, 52).stroke('#CBD5E1');
       doc.fillColor('#475569').fontSize(8).font('Helvetica-Bold')
-         .text('OFFICIAL DIGITAL STAMP & SIGNATURE', 385, stampY + 16, { width: 165, align: 'center' });
-      doc.fillColor('#0F3D3E').fontSize(9).font('Helvetica-Bold')
-         .text('CivicAI Automated Dispatch', 385, stampY + 32, { width: 165, align: 'center' });
+         .text('OFFICIAL DIGITAL STAMP & SIGNATURE', 385, stampY + 13, { width: 165, align: 'center' });
+      doc.fillColor('#0F3D3E').fontSize(8.5).font('Helvetica-Bold')
+         .text('CivicAI Automated Dispatch', 385, stampY + 27, { width: 165, align: 'center' });
       doc.fontSize(7).font('Helvetica')
-         .text('Verified under e-Governance IT Act', 385, stampY + 46, { width: 165, align: 'center' });
+         .text('Verified under e-Governance IT Act', 385, stampY + 40, { width: 165, align: 'center' });
 
-      doc.fillColor('#64748B').fontSize(8).font('Helvetica')
-         .text('This is an official government incident report generated by CivicAI. Electronically verified.', 40, stampY + 25);
-      doc.text('CivicAI Public Grievance Redressal Platform', 40, stampY + 38);
+      doc.fillColor('#64748B').fontSize(7.5).font('Helvetica')
+         .text('This is an official government incident report generated by CivicAI. Electronically verified.', 40, stampY + 20);
+      doc.text('CivicAI Public Grievance Redressal Platform', 40, stampY + 32);
 
       doc.end();
 
