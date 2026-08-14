@@ -383,6 +383,29 @@ function renderComplaintsGrid() {
       `;
     }
 
+    let issuesHtml = '';
+    if (c.detected_issues && Array.isArray(c.detected_issues) && c.detected_issues.length > 0) {
+      const issueItems = c.detected_issues.map(iss => `
+        <div class="flex items-center justify-between text-[11px] py-1 border-b border-slate-100 last:border-0">
+          <span class="font-medium ${parseInt(iss.category_id) === parseInt(loggedInOfficer.department_id) ? 'font-extrabold text-teal-900 ring-1 ring-teal-500/40 px-1.5 py-0.5 rounded bg-teal-50' : 'text-slate-700'}">
+            ${iss.category_name}: ${iss.problem}
+          </span>
+          <span class="text-[9px] font-bold px-1.5 py-0.5 rounded uppercase ${iss.status === 'RESOLVED' ? 'bg-emerald-100 text-emerald-800' : (iss.status === 'ONGOING' ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800')}">
+            ${iss.status}
+          </span>
+        </div>
+      `).join('');
+
+      issuesHtml = `
+        <div class="bg-gradient-to-r from-teal-50 to-emerald-50 p-3 rounded-xl border border-teal-200 text-xs mb-3">
+          <div class="text-[10px] font-extrabold uppercase tracking-wider text-teal-900 mb-1.5 flex items-center justify-between">
+            <span><i class="fa-solid fa-list-check text-teal-700 mr-1"></i> Multi-Issue Department Routing (${c.detected_issues.length} Issues Extracted)</span>
+          </div>
+          <div class="space-y-0.5">${issueItems}</div>
+        </div>
+      `;
+    }
+
     card.className = `bg-white rounded-2xl p-5 ${borderClass} flex flex-col justify-between space-y-4`;
     card.innerHTML = `
       <div>
@@ -412,10 +435,12 @@ function renderComplaintsGrid() {
           <p class="text-slate-800 font-medium italic">"${c.original_note}"</p>
         </div>
 
+        ${issuesHtml}
+
         <div class="bg-blue-50/70 p-3 rounded-xl border border-blue-200 text-xs">
           <div class="text-[10px] font-bold uppercase tracking-wider text-blue-800 mb-1 flex items-center space-x-1">
             <i class="fa-solid fa-brain"></i>
-            <span>Gemini AI Summary</span>
+            <span>Gemini AI Action Directives</span>
           </div>
           <p class="text-slate-800 font-semibold leading-relaxed">${c.ai_summary || 'Analysis pending.'}</p>
         </div>

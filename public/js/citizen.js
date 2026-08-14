@@ -1221,6 +1221,30 @@ function renderTrackingTimeline(complaint) {
     summaryText = `సమస్య సారాంశం: "${complaint.original_note}" (విభాగం: ${deptName}, స్థలం: ${complaint.village}, ${complaint.mandal})`;
   }
 
+  let multiIssuesTimelineHtml = '';
+  if (complaint.detected_issues && Array.isArray(complaint.detected_issues) && complaint.detected_issues.length > 0) {
+    const listHtml = complaint.detected_issues.map((iss, i) => `
+      <div class="bg-white border border-slate-200 p-3 rounded-xl flex items-center justify-between text-xs shadow-xs">
+        <div>
+          <div class="font-extrabold text-slate-900">Issue #${i+1}: ${iss.category_name}</div>
+          <div class="text-slate-600 font-medium text-[11px]">${iss.problem}</div>
+        </div>
+        <span class="px-2.5 py-0.5 rounded text-[10px] font-extrabold uppercase ${iss.status === 'RESOLVED' ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : (iss.status === 'ONGOING' ? 'bg-blue-100 text-blue-800 border border-blue-300' : 'bg-amber-100 text-amber-900 border border-amber-300')}">
+          ${iss.status}
+        </span>
+      </div>
+    `).join('');
+
+    multiIssuesTimelineHtml = `
+      <div class="bg-gradient-to-r from-teal-50 to-emerald-50 border border-teal-200 p-3.5 rounded-xl space-y-2 text-xs">
+        <div class="font-extrabold text-teal-950 uppercase tracking-wider text-[11px] flex items-center justify-between">
+          <span><i class="fa-solid fa-list-check text-teal-700 mr-1"></i> Detected Civic Issues (${complaint.detected_issues.length} Department Assignments)</span>
+        </div>
+        <div class="space-y-1.5">${listHtml}</div>
+      </div>
+    `;
+  }
+
   container.innerHTML = `
     <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3 shadow-xs">
       <div class="flex items-center justify-between">
@@ -1237,6 +1261,8 @@ function renderTrackingTimeline(complaint) {
         <div><span class="font-bold text-slate-600">${severityLbl}</span> <span class="font-extrabold text-slate-900">${severityDisplay}</span></div>
         <div><span class="font-bold text-slate-600">${languageLbl}</span> <span class="font-semibold text-slate-900">${complaint.detected_language || 'Telugu'}</span></div>
       </div>
+
+      ${multiIssuesTimelineHtml}
 
       <div class="bg-amber-50 border border-amber-200 p-3 rounded-lg text-xs text-slate-800 font-semibold leading-relaxed">
         <i class="fa-solid fa-sparkles text-amber-600 mr-1.5"></i>

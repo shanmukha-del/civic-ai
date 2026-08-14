@@ -254,6 +254,7 @@ router.post('/complaints', async (req, res) => {
       mandal: cleanMand,
       category_id: aiAnalysis.category_id,
       category_name: aiAnalysis.is_multi_department ? aiAnalysis.multi_department_names : aiAnalysis.category_name,
+      detected_issues: aiAnalysis.detected_issues || [],
       severity: aiAnalysis.severity,
       ai_summary: finalSummary,
       status: 'PENDING'
@@ -265,11 +266,14 @@ router.post('/complaints', async (req, res) => {
     if (aiAnalysis.is_multi_department && matchedDepts.length > 1) {
       for (let i = 1; i < matchedDepts.length; i++) {
         const secDept = matchedDepts[i];
+        const secIssue = (aiAnalysis.detected_issues || []).find(iss => iss.category_id === secDept.id);
+        const secProb = secIssue ? secIssue.problem : `${secDept.name} Issue`;
+
         const subData = {
           ...complaintData,
           category_id: secDept.id,
           category_name: secDept.name,
-          ai_summary: `[LINKED MULTI-DEPT TICKET #${createdComplaint.tracking_id}] ${finalSummary}`
+          ai_summary: `[LINKED MULTI-DEPT ISSUE #${createdComplaint.tracking_id}] ${secProb}. Summary: ${aiAnalysis.ai_summary}`
         };
         try {
           await db.createComplaint(subData);
@@ -303,18 +307,6 @@ router.post('/complaints', async (req, res) => {
 
     const whatsappURL = `https://api.whatsapp.com/send?phone=91${officerMobile}&text=${encodeURIComponent(whatsappMessage)}`;
 
-      village: cleanVill,
-      mandal: cleanMand
-    });
-
-    // Twilio disabled as requested
-    // Twilio disabled as requested
-
-    // Also Alert Assigned Officer via Twilio SMS & WhatsApp
-    const officerMsg = `CIVICAI INCIDENT ASSIGNED #${createdComplaint.tracking_id}\nCategory: ${aiAnalysis.category_name}\nSeverity: ${aiAnalysis.severity}\nLocation: ${cleanVill}, ${cleanMand}\nCitizen Mobile: ${citizen_mobile}\nNote: "${original_note}"\nMap: ${mapLink}`;
-    // Twilio disabled as requested
-    // Twilio disabled as requested
-
     res.json({
       success: true,
       complaint: createdComplaint,
@@ -322,7 +314,7 @@ router.post('/complaints', async (req, res) => {
       assigned_officer: {
         name: officerName,
         mobile: officerMobile,
-        is_assigned: !!officer
+        is_assigned: !!primaryOfficer.is_assigned
       },
       whatsapp_url: whatsappURL,
       pdf_path: pdfPath
@@ -339,7 +331,21 @@ router.get('/complaints', async (req, res) => {
   try {
     const { village, mandal, category_id } = req.query;
     const complaints = await db.getComplaints({ village, mandal, category_id });
-    res.json({ success: true, complaints });
+    const availableDepts = await db.getDepartments();
+
+    // Enrich complaints with detected_issues if not already stored
+    const enriched = (complaints || []).map(c => {
+      if (!c.detected_issues || c.detected_issues.length === 0) {
+        const analysis = localGrievanceAnalysis(c.original_note || '', c.village || 'Chittoor', c.mandal || 'Chittoor', availableDepts, c.detected_language);
+        return {
+          ...c,
+          detected_issues: analysis.detected_issues || []
+        };
+      }
+      return c;
+    });
+
+    res.json({ success: true, complaints: enriched });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

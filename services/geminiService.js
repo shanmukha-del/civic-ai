@@ -29,7 +29,7 @@ Available Departments: ${JSON.stringify(availableDepartments)}
 Your task:
 1. Identify the detected language (Telugu, Hindi, Tamil, Kannada, Bengali, Marathi, Gujarati, Odia, Malayalam, Punjabi, Assamese, English).
 2. Classify if this complaint involves MULTIPLE departments (e.g. both Electricity Board AND Drainage Management AND Roads).
-3. If multiple departments are involved, return all matched departments in "matched_departments" array.
+3. If multiple departments are involved, return all matched departments in "matched_departments" array and extracted distinct issues in "detected_issues" array.
 4. Assign severity: "EMERGENCY", "MODERATE", or "MILD".
 5. Write a concise English summary.
 
@@ -40,9 +40,13 @@ Return JSON in this format ONLY:
   "confirmation_speech": "Speech string",
   "category_id": 2, 
   "category_name": "Selected Department Name",
-  "is_multi_department": true/false,
+  "is_multi_department": true,
   "multi_department_names": "Electricity Board & Drainage Management",
   "matched_departments": [{"id": 2, "name": "Electricity Board"}, {"id": 5, "name": "Drainage Management"}],
+  "detected_issues": [
+    {"issue_id": 1, "category_id": 2, "category_name": "Electricity Board", "problem": "Power Outage & Streetlight Failure", "status": "PENDING"},
+    {"issue_id": 2, "category_id": 5, "category_name": "Drainage Management", "problem": "Drainage Overflow & Sewerage Blockage", "status": "PENDING"}
+  ],
   "severity": "EMERGENCY",
   "ai_summary": "Short English summary of issue and risk level"
 }
@@ -62,7 +66,8 @@ Return JSON in this format ONLY:
         ...parsed,
         is_multi_department: parsed.is_multi_department || localRes.is_multi_department,
         matched_departments: (parsed.matched_departments && parsed.matched_departments.length > 0) ? parsed.matched_departments : localRes.matched_departments,
-        multi_department_names: parsed.multi_department_names || localRes.multi_department_names
+        multi_department_names: parsed.multi_department_names || localRes.multi_department_names,
+        detected_issues: (parsed.detected_issues && parsed.detected_issues.length > 0) ? parsed.detected_issues : localRes.detected_issues
       };
     } catch (err) {
       console.warn('⚠️ Gemini API call failed or timed out. Falling back to local NLP engine.', err.message);
@@ -108,7 +113,7 @@ function cleanLocationName(str) {
 }
 
 /**
- * Intelligent Local Fallback Classifier (Multi-Department Supported with 100% Clean Regex)
+ * Intelligent Local Fallback Classifier (Multi-Department Supported with Clean Regex)
  */
 function localGrievanceAnalysis(note, village, mandal, availableDepts = [], preferredLang = 'te-IN') {
   const lowerNote = (note || '').toLowerCase();
@@ -166,16 +171,16 @@ function localGrievanceAnalysis(note, village, mandal, availableDepts = [], pref
   } else if (pLang.includes('as') || pLang.includes('assamese')) {
     detected_language = 'Assamese';
     bcp47_code = 'as-IN';
-    confirmation_speech = `আপোনাৰ समस्याটো ${cleanVill}, ${cleanMand} ত আছেনে? শুদ্ধ হ’লে সেউজীয়া বুটામ (Green) আৰু ভুল হ’লে ৰঙা বুটામ (Red) টিપक।`;
+    confirmation_speech = `আপোনাৰ समस्याটো ${cleanVill}, ${cleanMand} ত আছেনে? শুদ্ধ হ’లే সেউজীয়া বুটામ (Green) আৰু ভুল হ’લે ৰঙാ বুটામ (Red) টিપक।`;
   }
 
   // Multilingual Clean Regex Engine
   const roadsRegex = /\b(road|roads|pothole|potholes|bridge|street|highway|construction|damaged|damage|roddulu|gundalu|bata|dhaari|tar road|asphalt|cave-in|culvert|speed breaker|footpath|pavement|median|divider|pothole hazard)\b|రోడ్డు|రోడ్లు|గుంతలు|గోతులు|బాట|దారి|వంతెన|రోడ్డు గుంతలు|రోడ్డు పగిలిపోయింది|స్పీడ్ బ్రేకర్|కల్వర్టు|బాట దారి|సड़क|सडक|गड्ढा|गड्ढे|पुल|रास्ता|मार्ग|रस्ता|टूटी सड़क|बारिश से सड़क|சாலை|பள்ளம்|பாலம்|தெரு|பாதை|பாலத்தில்|சாலையில்|ராસ્તા|ગર્વ|બ્રીજ|સડક|રાસ્તાય|સડક|રસ્તો|ખાડા|પુલ|ରାସ୍ତା|ଖାଲ|ପୋଲ|ସੜକ|ଟୋਏ|ପੁଲ|റോഡ്|കുഴികൾ|പാലം|റോഡിൽ|ರಸ್ತೆ|ಗುಂಡಿ|ಸೇತುವೆ|ರಸ್ತೆಯಲ್ಲಿ|ରାସ୍ତାରେ/i;
-  const electricityRegex = /\b(current|electric|electricity|wire|wires|light|lights|power|transformer|bijli|mains|deepalu|dipamu|karanthu|spark|sparking|pole|poles|voltage|outage|shock|fire|flue|meter|feeder|voltage drop|cable|live wire|short circuit|current wire|power cut|street light|dark lane)\b|కరెంట్|కరెంటు|విద్యుత్|విధ్యుత్|దీపాలు|స్తంభం|లైట్|లైట్లు|వైర్|ట్రాన్స్‌ఫార్మర్|షాక్|మంటలు|స్పార్క్|కరెంట్ వైర్|ఒరిగిన స్తంభం|కరెంట్ పోయింది|వోల్టేజ్ తక్కువ|కరెంట్ షాక్|స్ట్రీట్ లైట్|बिजली|करंत|पावर|तार|खंभा|ट्रांसफार्मर|चिंगारी|वीज|वीजळी|सबस्टेशन|ट्रान्सफॉर्मर|ठिणग्या|अग्ग|மின்சார|மின்சாரம்|கரண்ட்|லைட்|தெரு விளக்கு|மின் கம்பம்|மின்சார ஒயர்|மின்மாற்றி|தீப்பொறி|বিদ্যুৎ|বিদ্যুতের|কারেন্ট|আলো|তাঁৰ|খুঁটা|વિજળી|બિજલી|વાયર|થાંભલો|બિજુଳિ|ଲାଇଟ୍|ତାର|ଖୁଣ୍ଟ|ବିଜୁଳି|ਕਰੰਟ|ਤਾਰ|ਖੰਭਾ|ਟ੍ਰਾਂਸਫਾਰਮਰ|ਅੱਗ|വൈദ്യുതി|കറന്റ്|ലൈറ്റ്|പോസ്റ്റ്|ವಿದ್ಯುತ್|ದೀಪ|ತಂತಿ|ಕಂಬ/i;
-  const waterRegex = /\b(water|water supply|pipeline|borewell|drinking|tank|tanker|neeru|paani|thanneer|leak|leakage|nillu|neellu|tap|pipe|pipes|ro plant|submersible|pump|motor|contamination|dirty water|muddy water|chlorine|water cut|low pressure|reservoir|valve|sump|tap water|river pipeline|underwater pipe)\b|నీళ్ళు|నీళ్లు|మంచి నీళ్ళు|మంచినీరు|పైపు|పైప్‌లైన్|టాప్|బోరు|ట్యాంకర్|వాటర్|పానీ|కలుషిత నీరు|నీటి లీకేజ్|పైపు పగిలింది|బోరు మోటార్|తాగునీరు|సబ్‌మర్సిబుల్|ట్యాంకర్ రావడం లేదు|నీటి సరఫరా|पानी|जल|नल|पाइप|पाणी|पिण्याचे पाणी|जल आपूर्ति|தண்ணீர்|குடிநீர்|குழாய்|நீர்|জল|পানি|পানীয় জল|পাইভ|પાણી|જળ|પાઇપ|પીવાનું પાણી|ପାଣି|ଜଳ|ପାଇପ୍|ପିଇବା ପାଣି|വെള്ളം|കുടിവെള്ളം|പൈപ്പ്|ਪਾਣੀ|ਜਲ|ਨਲਕਾ|ਪੀਣ ਵਾਲਾ ਪਾਣੀ|খোৱਾ ਪানী|পাইਪ|ನೀರು|ಕುಡಿಯುವ ನೀರು|ನಳ|ಪೈಪ್/i;
-  const sanitationRegex = /\b(garbage|waste|clean|cleaning|smell|dump|dumping|dustbin|kachra|dirty|chetta|chethha|durgandham|litter|trash|stink|unclean|dead animal|carcass|sweeper|sweeping|hygiene|plastic waste|public toilet|foul smell|waste heap)\b|చెత్త|చెత్తా|దుర్గంధం|పరిశుభ్రత|డస్ట్ బిన్|వ్యర్థాలు|చచ్చిన జంతువు|కచరా|చెత్త కుప్పలు|చెత్త వాసన|చెత్త బండి రావడం లేదు|పరిశుభ్రత లేదు|कचरा|गंदगी|सफाई|डस्टबिन|कूड़ा|घाण|दुर्गंधी|குப்பை|கழிவு|சுகாதாரம்|துர்நாற்றம்|ময়লা|আবর্জনা|পরিষ্কার|জাবৰ|કચરો|ગંદકી|સફાઈ|અળિઆ|ଆବર્ଜନା|ସଫେଇ|<ctrl42>ੂੜਾ|ਗੰਦਗੀ|ਅਹੁੱਕ|മാലിന്യം|ശുചിത്വം|കസ|ತ್ಯಾಜ್ಯ|ನೈರ್ಮಲ್ಯ/i;
+  const electricityRegex = /\b(current|electric|electricity|wire|wires|light|lights|power|transformer|bijli|mains|deepalu|dipamu|karanthu|spark|sparking|pole|poles|voltage|outage|shock|fire|flue|meter|feeder|voltage drop|cable|live wire|short circuit|current wire|power cut|street light|dark lane)\b|కరెంట్|కరెంటు|విద్యుత్|విధ్యుత్|దీపాలు|స్తంభం|లైట్|లైట్లు|వైర్|ట్రాన్స్‌ఫార్మర్|షాక్|మంటలు|స్పార్క్|కరెంట్ వైర్|ఒరిగిన స్తంభం|కరెంట్ పోయింది|వోల్టేజ్ తక్కువ|కరెంట్ షాక్|స్ట్రీట్ లైట్|बिजली|करंत|पावर|तार|खंभा|ट्रांसफार्मर|चिंगारी|वीज|वीजळी|सबस्टेशन|ट्रान्सफॉर्मर|ठिणग्या|अग्ग|மின்சார|மின்சாரம்|கரண்ட்|லைட்|தெரு விளக்கு|மின் கம்பம்|மின்சார ஒயர்|மின்மாற்றி|தீப்பொறி|বিদ্যুৎ|বিদ্যুতের|কারেন্ট|আলো|তাঁৰ|খুঁٹا|વિજળી|બિજલી|વાયર|થાંભલો|બિજુଳિ|ଲାଇଟ୍|ତାର|ଖୁଣ୍ଟ|ବିଜୁଳି|ਕਰੰਟ|ਤਾਰ|ਖੰਭਾ|ਟ੍ਰਾਂસਫਾਰਮਰ|ਅੱਗ|വൈദ്യുതി|കറന്റ്|ലൈറ്റ്|പോസ്റ്റ്|ವಿದ್ಯುತ್|ದೀಪ|ತಂತಿ|ಕಂಬ/i;
+  const waterRegex = /\b(water|water supply|pipeline|borewell|drinking|tank|tanker|neeru|paani|thanneer|leak|leakage|nillu|neellu|tap|pipe|pipes|ro plant|submersible|pump|motor|contamination|dirty water|muddy water|chlorine|water cut|low pressure|reservoir|valve|sump|tap water|river pipeline|underwater pipe)\b|నీళ్ళు|నీళ్లు|మంచి నీళ్ళు|మంచినీరు|పైపు|పైప్‌లైన్|టాప్|బోరు|ట్యాంకర్|వాటర్|పానీ|కలుషిత నీరు|నీటి లీకేజ్|పైపు పగిలింది|బోరు మోటార్|తాగునీరు|సబ్‌మర్సిబుల్|ట్యాంకర్ రావడం లేదు|నీటి సరఫరా|पानी|जल|नल|पाइप|पाणी|पिण्याचे पाणी|जल आपूर्ति|தண்ணீர்|குடிநீர்|குழாய்|நீர்|জল|পানি|পানীয় জল|পাইভ|પાણી|જળ|પાઇપ|પીવાનું પાણી|ପାଣି|ଜଳ|ପାଇପ୍|ପିଇବା ପାଣି|വെള്ളം|കുടിവെള്ളം|പൈപ്പ്|ਪਾਣੀ|ਜਲ|ਨਲਕਾ|ਪੀਣ ਵਾਲਾ ਪਾਣੀ|খোৱਾ ਪানী|পাইপ|ನೀರು|ಕುಡಿಯುವ నీರು|ನಳ|ಪೈප්/i;
+  const sanitationRegex = /\b(garbage|waste|clean|cleaning|smell|dump|dumping|dustbin|kachra|dirty|chetta|chethha|durgandham|litter|trash|stink|unclean|dead animal|carcass|sweeper|sweeping|hygiene|plastic waste|public toilet|foul smell|waste heap)\b|చెత్త|చెత్తా|దుర్గంధం|పరిశుభ్రత|డస్ట్ బిన్|వ్యర్థాలు|చచ్చిన జంతువు|కచరా|చెత్త కుప్పలు|చెత్త వాసన|చెత్త బండి రావడం లేదు|పరిశుభ్రత లేదు|कचरा|गंदगी|सफाई|डस्टबिन|कूड़ा|घाण|दुर्गंधी|குப்பை|கழிவு|சுகாதாரம்|துர்நாற்றம்|ময়লা|আবর্জনা|পরিষ্কার|জাবৰ|કચરો|ગંદકી|સફાઈ|અળિઆ|ଆବર્ଜନା|સଫੇઈ|<ctrl42>ੂੜਾ|ਗੰਦਗੀ|ਅਹੁੱਕ|മാലിന്യം|ശുചിത്വം|കസ|ತ್ಯಾಜ್ಯ|ನೈರ್ಮಲ್ಯ/i;
   const drainageRegex = /\b(drainage|sewer|sewerage|waterlogging|waterlog|overflow|overflowing|kanal|gutter|mori|scum|kaluva|clogged|stagnant|drain|drains|manhole|open drain|desilting|sludge|nala|sewage|rainwater|flooded|rainwater blockage)\b|డ్రైనేజీ|డ్రైనేజి|కాల్వ|కాలువ|మోరీ|మురికినీరు|చెత్తనీరు|మురుగు|నాలీ|మ్యాన్ హోల్|మ్యాన్‌హోల్ మూత|మురుగు నీరు ఇళ్లలోకి|కాలువ పూడిక|డ్రైనేజీ పొంగిపారడం|नालियां|गटर|ड्रेनेज|सीवर|गंदा पानी|सांडपाणी|मैनहोल|ढक्कन|சாக்கடை|வடிகால்|கழிவுநீர்|சாக்கடை நீர்|மேன்ஹோல்|மூடி|நর্দমা|ড্রেনেজ|পয়ঃনিষ্কাশন|ড্রেনের|গটার|ગટર|ગંદુ પાણી|નાળુ|નાલી|ନଳା|ଡ୍ରେନେଜ୍|ଗଟର|ନଳାର|ഓട|ഡ്രെയിനേജ്|അഴുക്കുചാൽ|ഓടയിലെ|ਨਾਲ਼ਾ|ਨਲਾ|ਸੀਵਰ|ਚਰಂಡਿ|ਚਰಂಡੀ|ಚರಂಡಿ|ಚರಂಡಿಯ/i;
-  const unmappedOtherRegex = /\b(hospital|doctor|school|teacher|stray dog|monkey|snake|bus stop|bus delay|forest|tree cutting|land boundary|encroachment|police|fire station|revenue)\b|ఆసుపత్రి|డాక్టర్|బడి|స్కూలు|పిచ్చి కుక్కలు|పాము|అడవి|చెట్లు నరకడం|స్థలం ఆక్రమణ|అగ్ని ప్రమాదం|अस्पताल|स्कूल|कुत्ते|सांप|सरकारी बस|மருத்துவமனை|பள்ளி|நாய்கள்|হাসপাতাল|স্কুল|હોસ્પિટલ|શાળા|ଡାକ୍ତରଖାନା|ସ୍କୁଲ୍|ଆଶുപത്രി|സ്കൂൾ|ਸਰਕਾਰੀ ഹസപതാല|ਸਕੂਲ|ଆಸ್ಪತ್ರೆ|ಶಾલે/i;
+  const unmappedOtherRegex = /\b(hospital|doctor|school|teacher|stray dog|monkey|snake|bus stop|bus delay|forest|tree cutting|land boundary|encroachment|police|fire station|revenue)\b|ఆసుపత్రి|డాక్టర్|బడి|స్కూలు|పిచ్చి కుక్కలు|పాము|అడవి|చెట్లు నరకడం|స్థలం ఆక్రమణ|అగ్ని ప్రమాదం|अस्पताल|स्कूल|कुत्ते|सांप|सरकारी बस|மருத்துவமனை|பள்ளி|நாய்கள்|হাসপাতাল|স্কুল|હોસ્પિટલ|શાળા|ଡାକ୍ତରଖାନା|ସ୍କୁલ୍|ଆଶുപത്രി|സ്കൂൾ|സർਕਾਰੀ ഹസപതാല|ਸਕੂਲ|ଆಸ್ಪತ್ರೆ|ಶಾಲೆ/i;
 
   let matchedDepts = [];
 
@@ -226,6 +231,26 @@ function localGrievanceAnalysis(note, village, mandal, availableDepts = [], pref
   const isMultiDepartment = uniqueMatchedDepts.length > 1;
   const multiDepartmentNames = uniqueMatchedDepts.map(d => d.name).join(' & ');
 
+  let detected_issues = uniqueMatchedDepts.map((d, index) => {
+    let prob = `${d.name} Issue`;
+    if (d.id === 3) prob = 'Damaged Road & Infrastructure';
+    else if (d.id === 5) prob = 'Drainage Overflow & Sewerage Blockage';
+    else if (d.id === 2) prob = 'Power Outage & Streetlight Failure';
+    else if (d.id === 4) prob = 'Garbage Accumulation & Waste Clearance';
+    else if (d.id === 1) prob = 'Water Supply & Pipeline Issue';
+    else if (d.id === 99) prob = 'General Civic & Public Health Issue';
+
+    return {
+      issue_id: index + 1,
+      category_id: d.id,
+      category_name: d.name,
+      problem: prob,
+      status: 'PENDING',
+      assigned_officer: null,
+      updated_at: new Date().toISOString()
+    };
+  });
+
   let summary = `Grievance reported for ${cleanVill}, ${cleanMand}.`;
   if (isMultiDepartment) {
     summary = `MULTI-DEPARTMENT INCIDENT (${multiDepartmentNames}): Combined grievance reported in ${cleanVill}, ${cleanMand}. Parallel field dispatch initiated for ${uniqueMatchedDepts.length} officers.`;
@@ -256,6 +281,7 @@ function localGrievanceAnalysis(note, village, mandal, availableDepts = [], pref
     is_multi_department: isMultiDepartment,
     matched_departments: uniqueMatchedDepts,
     multi_department_names: multiDepartmentNames,
+    detected_issues,
     severity,
     ai_summary: summary
   };
