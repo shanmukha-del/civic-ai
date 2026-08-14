@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CivicAI Admin Portal - Central Management & Accountability</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+      background-color: #F8FAFC;
+      color: #0F172A;
+    }
+    .gov-banner-stripe {
+      background: linear-gradient(90deg, #FF9933 0%, #FFFFFF 50%, #128807 100%);
+      height: 5px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+  <div class="gov-banner-stripe"></div>
+
+  <!-- Header Navbar -->
+  <header class="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 bg-teal-900 text-amber-400 rounded-lg flex items-center justify-center font-bold text-lg shadow border border-amber-400">
+          <i class="fa-solid fa-layer-group"></i>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="text-xl font-extrabold tracking-tight text-teal-950">CivicAI Admin</h1>
+            <span class="bg-teal-100 text-teal-900 border border-teal-300 text-xs font-semibold px-2 py-0.5 rounded-full">Central Command</span>
+          </div>
+          <p class="text-xs text-slate-500 font-medium">Department Management, Officer Onboarding & Accountability Analytics</p>
+        </div>
+      </div>
+      
+      <div class="flex items-center space-x-2">
+        <a href="/" class="inline-flex items-center space-x-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-lg text-xs font-bold transition border border-slate-300">
+          <i class="fa-solid fa-earth-asia text-teal-800"></i>
+          <span>Citizen Portal</span>
+        </a>
+        <a href="/portal/login" class="inline-flex items-center space-x-1.5 bg-teal-900 hover:bg-teal-800 text-white px-3 py-2 rounded-lg text-xs font-bold transition shadow-sm">
+          <i class="fa-solid fa-user-shield"></i>
+          <span>Officer Login</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full space-y-6">
+    
+    <!-- System Analytics & Accountability Metrics -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
+        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Total Complaints</span>
+        <h3 id="statTotal" class="text-2xl font-black text-slate-900 mt-0.5">0</h3>
+      </div>
+
+      <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
+        <span class="text-[10px] font-bold text-slate-600 uppercase tracking-wider block">Pending</span>
+        <h3 id="statPending" class="text-2xl font-black text-slate-800 mt-0.5">0</h3>
+      </div>
+
+      <div class="bg-white p-4 rounded-xl border border-teal-200 shadow-xs">
+        <span class="text-[10px] font-bold text-teal-800 uppercase tracking-wider block">Ongoing</span>
+        <h3 id="statOngoing" class="text-2xl font-black text-teal-900 mt-0.5">0</h3>
+      </div>
+
+      <div class="bg-white p-4 rounded-xl border border-emerald-200 shadow-xs">
+        <span class="text-[10px] font-bold text-emerald-700 uppercase tracking-wider block">Resolved</span>
+        <h3 id="statResolved" class="text-2xl font-black text-emerald-700 mt-0.5">0</h3>
+      </div>
+
+      <div class="bg-white p-4 rounded-xl border border-rose-200 shadow-xs">
+        <span class="text-[10px] font-bold text-rose-600 uppercase tracking-wider block">Overdue</span>
+        <h3 id="statOverdue" class="text-2xl font-black text-rose-600 mt-0.5">0</h3>
+      </div>
+
+      <div class="bg-white p-4 rounded-xl border border-amber-200 shadow-xs">
+        <span class="text-[10px] font-bold text-amber-800 uppercase tracking-wider block">Deadline Compliance</span>
+        <h3 id="statCompliance" class="text-2xl font-black text-amber-900 mt-0.5">100%</h3>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="flex space-x-2 border-b border-slate-200">
+      <button id="tabDeptBtn" onclick="switchAdminTab('dept')"
+        class="py-3 px-4 text-xs font-extrabold text-teal-900 border-b-2 border-teal-900 flex items-center space-x-1.5">
+        <i class="fa-solid fa-list-check"></i>
+        <span>Department Management (Tab A)</span>
+      </button>
+      
+      <button id="tabOfficerBtn" onclick="switchAdminTab('officer')"
+        class="py-3 px-4 text-xs font-extrabold text-slate-500 hover:text-teal-900 flex items-center space-x-1.5">
+        <i class="fa-solid fa-user-plus"></i>
+        <span>Officer Onboarding (Tab B)</span>
+      </button>
+
+      <button id="tabLogsBtn" onclick="switchAdminTab('logs')"
+        class="py-3 px-4 text-xs font-extrabold text-slate-500 hover:text-teal-900 flex items-center space-x-1.5">
+        <i class="fa-solid fa-clipboard-list"></i>
+        <span>System Audit Logs (Tab C)</span>
+      </button>
+    </div>
+
+    <!-- TAB A: DEPARTMENT MANAGEMENT -->
+    <div id="tabDeptContent" class="space-y-6">
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+        <h3 class="text-sm font-bold text-slate-900 mb-3 flex items-center space-x-2">
+          <i class="fa-solid fa-plus-circle text-teal-800"></i>
+          <span>Add Custom Public Department</span>
+        </h3>
+        <form onsubmit="handleAddDepartment(event)" class="flex flex-col sm:flex-row items-center gap-3">
+          <input type="text" id="newDeptName" required placeholder="e.g. Street Lighting & Energy Grid, Solid Waste Management"
+            class="flex-grow w-full p-3 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-teal-700">
+          <button type="submit" class="w-full sm:w-auto px-5 py-3 bg-teal-900 hover:bg-teal-800 text-white rounded-xl font-bold text-xs shadow transition">
+            Add Department
+          </button>
+        </form>
+      </div>
+
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+        <h3 class="text-sm font-bold text-slate-900 mb-3">Configured Public Departments</h3>
+        <div id="departmentsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <!-- Dynamic rendering -->
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB B: OFFICER ONBOARDING -->
+    <div id="tabOfficerContent" class="hidden space-y-6">
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+        <div class="border-b pb-3 mb-5">
+          <h3 class="text-sm font-bold text-slate-900 flex items-center space-x-2">
+            <i class="fa-solid fa-user-shield text-teal-800"></i>
+            <span>Field Officer Onboarding Form</span>
+          </h3>
+          <p class="text-xs text-slate-500 mt-0.5">Enforces database constraint: Exactly ONE designated officer per department per village. Dispatches onboarding email.</p>
+        </div>
+
+        <form onsubmit="handleOnboardOfficer(event)" class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Officer Name *</label>
+              <input type="text" id="offName" required placeholder="e.g. Ramesh Kumar" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-bold">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Mobile Number (WhatsApp) *</label>
+              <input type="tel" id="offMobile" required pattern="[0-9]{10}" placeholder="10-digit mobile" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-bold">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Official Email *</label>
+              <input type="email" id="offEmail" required placeholder="e.g. ramesh@civicai.gov.in" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-bold">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Department *</label>
+              <select id="offDepartment" required class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-bold text-slate-800">
+                <!-- Dynamically populated -->
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">State *</label>
+              <input type="text" id="offState" required value="Andhra Pradesh" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-bold">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">District *</label>
+              <input type="text" id="offDistrict" required value="Chittoor" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-bold">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Mandal Name *</label>
+              <input type="text" id="offMandal" required placeholder="e.g. Kuppam" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-bold">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Village Name *</label>
+              <input type="text" id="offVillage" required placeholder="e.g. Kuppam" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-bold">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Initial Temporary Username *</label>
+              <input type="text" id="offUsername" required placeholder="e.g. officer_kuppam_water" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-bold">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Initial Temporary Password *</label>
+              <input type="text" id="offPassword" required value="pass123" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-bold">
+            </div>
+          </div>
+
+          <div class="pt-2">
+            <button type="submit" class="px-5 py-3 bg-teal-900 hover:bg-teal-800 text-white rounded-xl font-bold text-xs shadow transition">
+              Onboard Officer & Dispatch Email
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs overflow-x-auto">
+        <h3 class="text-sm font-bold text-slate-900 mb-3">Active Assigned Officers</h3>
+        <table class="w-full text-left text-xs text-slate-700">
+          <thead class="bg-slate-100 text-slate-900 uppercase font-bold text-[10px] border-b border-slate-200">
+            <tr>
+              <th class="p-2.5">ID</th>
+              <th class="p-2.5">Officer Name</th>
+              <th class="p-2.5">Contact Email & Mobile</th>
+              <th class="p-2.5">Department</th>
+              <th class="p-2.5">Jurisdiction (Village, Mandal)</th>
+              <th class="p-2.5">Username</th>
+              <th class="p-2.5">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="officersTableBody" class="divide-y divide-slate-200 font-medium">
+            <!-- Dynamic rows -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB C: SYSTEM AUDIT LOGS -->
+    <div id="tabLogsContent" class="hidden space-y-6">
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs overflow-x-auto">
+        <div class="border-b pb-3 mb-4 flex items-center justify-between">
+          <div>
+            <h3 class="text-sm font-bold text-slate-900">System Activity Audit Log</h3>
+            <p class="text-xs text-slate-500">Real-time chronological audit log tracking system events, AI processing, officer actions, and notification dispatches.</p>
+          </div>
+          <button onclick="loadLogs()" class="px-3 py-1.5 bg-slate-100 text-slate-700 border border-slate-300 rounded-lg text-xs font-bold hover:bg-slate-200">
+            <i class="fa-solid fa-arrows-rotate mr-1"></i> Refresh Logs
+          </button>
+        </div>
+
+        <table class="w-full text-left text-xs text-slate-700">
+          <thead class="bg-slate-100 text-slate-900 uppercase font-bold text-[10px] border-b border-slate-200">
+            <tr>
+              <th class="p-2.5">Log ID</th>
+              <th class="p-2.5">Timestamp</th>
+              <th class="p-2.5">Event Type</th>
+              <th class="p-2.5">Actor Role</th>
+              <th class="p-2.5">Description</th>
+            </tr>
+          </thead>
+          <tbody id="logsTableBody" class="divide-y divide-slate-200 font-medium">
+            <!-- Dynamic rows -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="bg-white border-t border-slate-200 mt-12 py-5">
+    <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500">
+      <p class="font-semibold text-slate-700">CivicAI Admin Governance Platform</p>
+    </div>
+  </footer>
+
+  <!-- Protocol Check Warning Banner -->
+  <div id="fileProtocolWarning" class="hidden bg-amber-500 text-white font-bold px-4 py-3 text-center text-xs shadow-md z-50">
+    <i class="fa-solid fa-triangle-exclamation mr-2 text-base"></i>
+    <span>Notice: You opened this file directly (file://). For full functionality, open <a href="http://localhost:3000/portal/admin" class="underline font-extrabold text-amber-900 bg-amber-200 px-2 py-0.5 rounded">http://localhost:3000/portal/admin</a> in your browser!</span>
+  </div>
+
+  <script src="/js/admin.js"></script>
+  <script>
+    if (window.location.protocol === 'file:') {
+      const banner = document.getElementById('fileProtocolWarning');
+      if (banner) banner.classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
