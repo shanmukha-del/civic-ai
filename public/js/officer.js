@@ -14,7 +14,9 @@ function toggleCustomDeadlineInput(val) {
 }
 // Officer Portal Client Logic (CivicAI)
 
-const API_BASE = window.location.protocol === 'file:' ? 'http://localhost:3000' : '';
+const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? 'http://localhost:3000'
+  : 'https://civic-ai-mnw1.onrender.com';
 
 let loggedInOfficer = null;
 let allOfficerComplaints = [];
