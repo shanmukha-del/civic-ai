@@ -76,6 +76,7 @@ async function showOfficerDashboard() {
   document.getElementById('offHeaderDept').textContent = deptName || `Department (${loggedInOfficer.department_id})`;
 
   refreshOfficerComplaints();
+  startOfficerAutoPolling();
 }
 
 // 1. Login Handler
@@ -147,8 +148,85 @@ function logoutOfficer() {
   showLoginModal();
 }
 
+let knownComplaintIds = new Set();
+let officerPollingInterval = null;
+
+function playProfessionalChimeAlert() {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+
+    // High Crisp Tone 1 (E6 - 1318.5 Hz)
+    const osc1 = ctx.createOscillator();
+    const gain1 = ctx.createGain();
+    osc1.type = 'sine';
+    osc1.frequency.setValueAtTime(1318.5, ctx.currentTime);
+    gain1.gain.setValueAtTime(0.18, ctx.currentTime);
+    gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+    osc1.connect(gain1);
+    gain1.connect(ctx.destination);
+    osc1.start(ctx.currentTime);
+    osc1.stop(ctx.currentTime + 0.35);
+
+    // Warm Harmonious Tone 2 (B6 - 1975.5 Hz) - Delay 120ms
+    const osc2 = ctx.createOscillator();
+    const gain2 = ctx.createGain();
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(1975.5, ctx.currentTime + 0.12);
+    gain2.gain.setValueAtTime(0.22, ctx.currentTime + 0.12);
+    gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.55);
+    osc2.connect(gain2);
+    gain2.connect(ctx.destination);
+    osc2.start(ctx.currentTime + 0.12);
+    osc2.stop(ctx.currentTime + 0.55);
+  } catch (e) {}
+}
+
+function showProfessionalToastNotification(title, message, isEmergency = false) {
+  let toastContainer = document.getElementById('civicToastContainer');
+  if (!toastContainer) {
+    toastContainer = document.createElement('div');
+    toastContainer.id = 'civicToastContainer';
+    toastContainer.className = 'fixed top-4 right-4 z-[99999] flex flex-col space-y-2 pointer-events-none max-w-sm w-full px-4';
+    document.body.appendChild(toastContainer);
+  }
+
+  const toast = document.createElement('div');
+  toast.className = `p-4 rounded-2xl shadow-2xl border flex items-start space-x-3 pointer-events-auto transform transition-all duration-500 translate-y-0 opacity-100 ${
+    isEmergency ? 'bg-rose-900 text-white border-rose-500' : 'bg-slate-900 text-white border-teal-500'
+  }`;
+
+  toast.innerHTML = `
+    <div class="w-9 h-9 rounded-xl ${isEmergency ? 'bg-rose-700 text-rose-100' : 'bg-teal-700 text-amber-300'} flex items-center justify-center text-lg flex-shrink-0 shadow-md">
+      <i class="fa-solid ${isEmergency ? 'fa-triangle-exclamation animate-bounce' : 'fa-bell animate-pulse'}"></i>
+    </div>
+    <div class="flex-grow">
+      <h4 class="font-extrabold text-xs tracking-wide uppercase ${isEmergency ? 'text-rose-200' : 'text-amber-400'}">${title}</h4>
+      <p class="text-xs text-slate-200 mt-0.5 leading-snug font-medium">${message}</p>
+    </div>
+  `;
+
+  toastContainer.appendChild(toast);
+
+  setTimeout(() => {
+    toast.classList.add('opacity-0', '-translate-y-2');
+    setTimeout(() => toast.remove(), 500);
+  }, 6000);
+}
+
+function startOfficerAutoPolling() {
+  if (officerPollingInterval) clearInterval(officerPollingInterval);
+  // Auto refresh every 6 seconds
+  officerPollingInterval = setInterval(() => {
+    if (loggedInOfficer) {
+      refreshOfficerComplaints(true);
+    }
+  }, 6000);
+}
+
 // 3. Fetch Officer Complaints
-async function refreshOfficerComplaints() {
+async function refreshOfficerComplaints(isPoll = false) {
   if (!loggedInOfficer) return;
 
   const village = loggedInOfficer.village;
@@ -162,6 +240,31 @@ async function refreshOfficerComplaints() {
 
     if (data.success) {
       allOfficerComplaints = data.complaints || [];
+
+      // Detect new complaints during continuous background polling
+      let hasNewIncident = false;
+      let latestNewComplaint = null;
+
+      allOfficerComplaints.forEach(c => {
+        const idStr = String(c.id || c.tracking_id);
+        if (!knownComplaintIds.has(idStr)) {
+          if (knownComplaintIds.size > 0 && isPoll) {
+            hasNewIncident = true;
+            latestNewComplaint = c;
+          }
+          knownComplaintIds.add(idStr);
+        }
+      });
+
+      if (hasNewIncident && latestNewComplaint) {
+        playProfessionalChimeAlert();
+        const isEmergency = latestNewComplaint.severity === 'EMERGENCY';
+        showProfessionalToastNotification(
+          isEmergency ? '🚨 EMERGENCY INCIDENT ASSIGNED' : '🔔 NEW INCIDENT ASSIGNED',
+          `Incident #${latestNewComplaint.tracking_id || latestNewComplaint.id} reported in ${latestNewComplaint.village || 'your jurisdiction'}.`,
+          isEmergency
+        );
+      }
 
       const pendingList = allOfficerComplaints.filter(c => c.status === 'PENDING');
       const ongoingList = allOfficerComplaints.filter(c => c.status === 'ONGOING' || c.status === 'DISPATCHED');
@@ -177,7 +280,6 @@ async function refreshOfficerComplaints() {
       const emergencyBanner = document.getElementById('emergencyBanner');
       if (emergencyList.length > 0) {
         emergencyBanner.classList.remove('hidden');
-        playEmergencyAudioBeep();
       } else {
         emergencyBanner.classList.add('hidden');
       }
@@ -187,29 +289,6 @@ async function refreshOfficerComplaints() {
   } catch (err) {
     console.error('Error fetching officer complaints:', err);
   }
-}
-
-function playEmergencyAudioBeep() {
-  try {
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    if (!AudioCtx) return;
-    const ctx = new AudioCtx();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(880, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.4);
-
-    gain.gain.setValueAtTime(0.3, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
-
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-
-    osc.start();
-    osc.stop(ctx.currentTime + 0.4);
-  } catch (e) {}
 }
 
 function switchOfficerCardFilter(cardType) {

@@ -4,9 +4,84 @@ const API_BASE = (window.location.hostname === 'localhost' || window.location.ho
   ? 'http://localhost:3000'
   : 'https://civic-ai-mnw1.onrender.com';
 
+let previousAdminTotal = 0;
+let adminPollingInterval = null;
+
+function playProfessionalChimeAlert() {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+
+    // High Crisp Tone 1 (E6 - 1318.5 Hz)
+    const osc1 = ctx.createOscillator();
+    const gain1 = ctx.createGain();
+    osc1.type = 'sine';
+    osc1.frequency.setValueAtTime(1318.5, ctx.currentTime);
+    gain1.gain.setValueAtTime(0.18, ctx.currentTime);
+    gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+    osc1.connect(gain1);
+    gain1.connect(ctx.destination);
+    osc1.start(ctx.currentTime);
+    osc1.stop(ctx.currentTime + 0.35);
+
+    // Warm Harmonious Tone 2 (B6 - 1975.5 Hz) - Delay 120ms
+    const osc2 = ctx.createOscillator();
+    const gain2 = ctx.createGain();
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(1975.5, ctx.currentTime + 0.12);
+    gain2.gain.setValueAtTime(0.22, ctx.currentTime + 0.12);
+    gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.55);
+    osc2.connect(gain2);
+    gain2.connect(ctx.destination);
+    osc2.start(ctx.currentTime + 0.12);
+    osc2.stop(ctx.currentTime + 0.55);
+  } catch (e) {}
+}
+
+function showProfessionalToastNotification(title, message) {
+  let toastContainer = document.getElementById('civicToastContainer');
+  if (!toastContainer) {
+    toastContainer = document.createElement('div');
+    toastContainer.id = 'civicToastContainer';
+    toastContainer.className = 'fixed top-4 right-4 z-[99999] flex flex-col space-y-2 pointer-events-none max-w-sm w-full px-4';
+    document.body.appendChild(toastContainer);
+  }
+
+  const toast = document.createElement('div');
+  toast.className = 'p-4 rounded-2xl shadow-2xl border flex items-start space-x-3 pointer-events-auto transform transition-all duration-500 translate-y-0 opacity-100 bg-slate-900 text-white border-amber-500';
+
+  toast.innerHTML = `
+    <div class="w-9 h-9 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center text-lg flex-shrink-0 shadow-md">
+      <i class="fa-solid fa-bell animate-pulse"></i>
+    </div>
+    <div class="flex-grow">
+      <h4 class="font-extrabold text-xs tracking-wide uppercase text-amber-400">${title}</h4>
+      <p class="text-xs text-slate-200 mt-0.5 leading-snug font-medium">${message}</p>
+    </div>
+  `;
+
+  toastContainer.appendChild(toast);
+
+  setTimeout(() => {
+    toast.classList.add('opacity-0', '-translate-y-2');
+    setTimeout(() => toast.remove(), 500);
+  }, 6000);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   loadAdminDashboard();
+  startAdminAutoPolling();
 });
+
+function startAdminAutoPolling() {
+  if (adminPollingInterval) clearInterval(adminPollingInterval);
+  // Auto refresh Admin dashboard every 6 seconds
+  adminPollingInterval = setInterval(() => {
+    loadAnalytics(true);
+    loadLogs();
+  }, 6000);
+}
 
 async function loadAdminDashboard() {
   await loadDepartments();
@@ -16,13 +91,24 @@ async function loadAdminDashboard() {
 }
 
 // 1. Analytics & Metrics
-async function loadAnalytics() {
+async function loadAnalytics(isPoll = false) {
   try {
     const res = await fetch(`${API_BASE}/api/admin/analytics`);
     const data = await res.json();
 
     if (data.success && data.analytics) {
       const a = data.analytics;
+      const currentTotal = parseInt(a.total) || 0;
+
+      if (isPoll && previousAdminTotal > 0 && currentTotal > previousAdminTotal) {
+        playProfessionalChimeAlert();
+        showProfessionalToastNotification(
+          '🏛️ CENTRAL ADMIN SYSTEM ALERT',
+          `${currentTotal - previousAdminTotal} new public grievance(s) registered in portal!`
+        );
+      }
+      previousAdminTotal = currentTotal;
+
       document.getElementById('statTotal').textContent = a.total;
       document.getElementById('statPending').textContent = a.pending;
       document.getElementById('statOngoing').textContent = a.ongoing;
