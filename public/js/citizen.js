@@ -413,67 +413,104 @@ let accumulatedSpeechText = '';
 
 function cleanDuplicateWords(text) {
   if (!text) return '';
-  const words = text.trim().split(/\s+/);
-  const clean = [];
+  // Remove consecutive repeated words & repeated phrases
+  let cleaned = text.replace(/(\b\w+\b)(?:\s+\1)+/gi, '$1');
+  
+  // Advanced multilingual token deduplication (for Hindi/Telugu/Tamil Unicode scripts)
+  const words = cleaned.trim().split(/\s+/);
+  const result = [];
   for (let i = 0; i < words.length; i++) {
-    const word = words[i];
-    if (i === 0 || word.toLowerCase() !== words[i - 1].toLowerCase()) {
-      clean.push(word);
+    const w = words[i].trim();
+    if (!w) continue;
+    if (i === 0 || w !== words[i - 1]) {
+      result.push(w);
     }
   }
-  return clean.join(' ');
+  return result.join(' ');
 }
 
-// 3. Continuous Web Speech API (Mobile Optimized, No Duplicate Words)
+// 3. Continuous Web Speech API (Mobile Android & Desktop Optimized)
 function initSpeechRecognition() {
   const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (SpeechRec) {
-    recognition = new SpeechRec();
-    recognition.continuous = true; // Continuous listening
+  if (!SpeechRec) {
+    document.getElementById('recordingStatus').textContent = 'Voice input not supported in this browser. Please type text below.';
+    return;
+  }
+
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+  recognition = new SpeechRec();
+  recognition.lang = localStorage.getItem('civic_user_bcp47') || currentSpeechLang || 'te-IN';
+
+  if (isMobile) {
+    // Mobile Android Chrome speech engine fix: disable interim results to eliminate OS duplicate results
+    recognition.continuous = false;
+    recognition.interimResults = false;
+  } else {
+    recognition.continuous = true;
     recognition.interimResults = true;
-    recognition.lang = localStorage.getItem('civic_user_bcp47') || currentSpeechLang || 'te-IN';
+  }
 
-    recognition.onstart = () => {
-      isRecording = true;
-      document.getElementById('micBtn').classList.add('pulse-mic');
-      document.getElementById('micIcon').className = 'fa-solid fa-square text-rose-600';
-      document.getElementById('recordingStatus').textContent = 'Recording Active... Speak continuously. Tap mic to finish.';
-      document.getElementById('recordingStatus').classList.add('text-rose-600');
-    };
+  recognition.onstart = () => {
+    isRecording = true;
+    document.getElementById('micBtn').classList.add('pulse-mic');
+    document.getElementById('micIcon').className = 'fa-solid fa-square text-rose-600';
+    document.getElementById('recordingStatus').textContent = 'Recording Active... Speak now. Tap mic to finish.';
+    document.getElementById('recordingStatus').classList.add('text-rose-600');
+  };
 
-    recognition.onresult = (event) => {
+  recognition.onresult = (event) => {
+    const textarea = document.getElementById('originalNote');
+
+    if (isMobile) {
+      // Mobile logic: Append only final clean speech chunks
+      let newSpeech = '';
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        newSpeech += event.results[i][0].transcript + ' ';
+      }
+      if (newSpeech.trim()) {
+        const currentVal = textarea.value.trim();
+        const combined = currentVal ? (currentVal + ' ' + newSpeech.trim()) : newSpeech.trim();
+        textarea.value = cleanDuplicateWords(combined);
+      }
+    } else {
+      // Desktop logic: Stream continuous results
       let currentSessionText = '';
       for (let i = 0; i < event.results.length; i++) {
         currentSessionText += event.results[i][0].transcript + ' ';
       }
       const fullRaw = (accumulatedSpeechText ? accumulatedSpeechText + ' ' : '') + currentSessionText;
-      document.getElementById('originalNote').value = cleanDuplicateWords(fullRaw);
-    };
+      textarea.value = cleanDuplicateWords(fullRaw);
+    }
+  };
 
-    recognition.onerror = (event) => {
-      console.warn('Speech Recognition notice:', event.error);
-      if (userWantsRecording && (event.error === 'no-speech' || event.error === 'network')) {
-        try {
-          recognition.start();
-        } catch (e) {}
-      } else {
-        stopRecordingUI();
-      }
-    };
+  recognition.onerror = (event) => {
+    console.warn('Speech Recognition notice:', event.error);
+    if (userWantsRecording && (event.error === 'no-speech' || event.error === 'network')) {
+      setTimeout(() => {
+        if (userWantsRecording) {
+          try { recognition.start(); } catch (e) {}
+        }
+      }, 300);
+    } else {
+      stopRecordingUI();
+    }
+  };
 
-    recognition.onend = () => {
-      accumulatedSpeechText = document.getElementById('originalNote').value.trim();
-      if (userWantsRecording) {
-        try {
-          recognition.start();
-        } catch (e) {}
-      } else {
-        stopRecordingUI();
-      }
-    };
-  } else {
-    document.getElementById('recordingStatus').textContent = 'Voice input not supported in this browser. Please type text below.';
-  }
+  recognition.onend = () => {
+    const textarea = document.getElementById('originalNote');
+    if (textarea) accumulatedSpeechText = textarea.value.trim();
+
+    if (userWantsRecording) {
+      setTimeout(() => {
+        if (userWantsRecording) {
+          try { recognition.start(); } catch (e) {}
+        }
+      }, 200);
+    } else {
+      stopRecordingUI();
+    }
+  };
 }
 
 function toggleVoiceRecording() {
