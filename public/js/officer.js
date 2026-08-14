@@ -349,7 +349,7 @@ function renderComplaintsGrid() {
             <span class="text-[10px]">Google Maps</span>
           </a>
 
-          <a href="${c.pdf_path ? `${API_BASE}${c.pdf_path}` : '#'}" target="_blank" class="py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg border border-slate-300 transition flex flex-col items-center justify-center p-1">
+          <a href="${API_BASE}/api/complaints/download-pdf/${c.tracking_id || c.id}" target="_blank" class="py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg border border-slate-300 transition flex flex-col items-center justify-center p-1">
             <i class="fa-solid fa-file-pdf text-rose-600 text-base mb-0.5"></i>
             <span class="text-[10px]">Download PDF</span>
           </a>

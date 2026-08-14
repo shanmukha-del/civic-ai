@@ -799,7 +799,7 @@ function showSuccessModal(data) {
   if (briefEl) briefEl.textContent = briefText;
 
   document.getElementById('resWhatsappBtn').href = data.whatsapp_url;
-  document.getElementById('resPdfBtn').href = c.pdf_path ? `${API_BASE}${c.pdf_path}` : '#';
+  document.getElementById('resPdfBtn').href = `${API_BASE}/api/complaints/download-pdf/${c.tracking_id || c.id}`;
 
   document.getElementById('successModal').classList.remove('hidden');
 

@@ -1,11 +1,39 @@
 const express = require('express');
 const router = express.Router();
 
+const fs = require('fs');
+const path = require('path');
 const db = require('../services/supabaseService');
 const { analyzeGrievance, translateOfficerUpdate } = require('../services/geminiService');
 const { generateIncidentPDF } = require('../services/pdfService');
 const { sendOfficerOnboardingEmail } = require('../services/emailService');
 const twilioService = require('../services/twilioService');
+
+// --- DYNAMIC PDF DOWNLOAD ENDPOINT ---
+router.get('/complaints/download-pdf/:trackingId', async (req, res) => {
+  try {
+    const { trackingId } = req.params;
+    const complaint = await db.getComplaintByTrackingId(trackingId);
+    if (!complaint) {
+      return res.status(404).send('Complaint not found');
+    }
+
+    let pdfPathRelative = complaint.pdf_path;
+    let fullPath = pdfPathRelative ? path.join(__dirname, '..', 'public', pdfPathRelative) : null;
+
+    if (!fullPath || !fs.existsSync(fullPath)) {
+      pdfPathRelative = await generateIncidentPDF(complaint);
+      fullPath = path.join(__dirname, '..', 'public', pdfPathRelative);
+    }
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `inline; filename="incident_report_${trackingId}.pdf"`);
+    res.sendFile(fullPath);
+  } catch (err) {
+    console.error('Error generating/downloading PDF:', err);
+    res.status(500).send('Error generating PDF report');
+  }
+});
 
 // --- 1. DEPARTMENTS ---
 router.get('/departments', async (req, res) => {
