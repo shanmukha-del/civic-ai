@@ -76,11 +76,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function startAdminAutoPolling() {
   if (adminPollingInterval) clearInterval(adminPollingInterval);
-  // Auto refresh Admin dashboard every 6 seconds
+  // Real-time polling every 2 seconds for INSTANT 2-3s admin alert notification
   adminPollingInterval = setInterval(() => {
     loadAnalytics(true);
     loadLogs();
-  }, 6000);
+  }, 2000);
 }
 
 async function loadAdminDashboard() {

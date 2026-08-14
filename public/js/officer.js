@@ -217,12 +217,12 @@ function showProfessionalToastNotification(title, message, isEmergency = false) 
 
 function startOfficerAutoPolling() {
   if (officerPollingInterval) clearInterval(officerPollingInterval);
-  // Auto refresh every 6 seconds
+  // Real-time polling every 2 seconds for INSTANT 2-3s officer alert notification
   officerPollingInterval = setInterval(() => {
     if (loggedInOfficer) {
       refreshOfficerComplaints(true);
     }
-  }, 6000);
+  }, 2000);
 }
 
 // 3. Fetch Officer Complaints
