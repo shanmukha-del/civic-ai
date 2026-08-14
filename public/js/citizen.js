@@ -409,29 +409,45 @@ function speakTextWithFemaleVoice(speechText, bcp47Code) {
   window.speechSynthesis.speak(utterance);
 }
 
-// 3. Continuous Web Speech API (Does NOT stop during pauses/gaps)
+let accumulatedSpeechText = '';
+
+function cleanDuplicateWords(text) {
+  if (!text) return '';
+  const words = text.trim().split(/\s+/);
+  const clean = [];
+  for (let i = 0; i < words.length; i++) {
+    const word = words[i];
+    if (i === 0 || word.toLowerCase() !== words[i - 1].toLowerCase()) {
+      clean.push(word);
+    }
+  }
+  return clean.join(' ');
+}
+
+// 3. Continuous Web Speech API (Mobile Optimized, No Duplicate Words)
 function initSpeechRecognition() {
   const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (SpeechRec) {
     recognition = new SpeechRec();
     recognition.continuous = true; // Continuous listening
     recognition.interimResults = true;
-    recognition.lang = currentSpeechLang || 'te-IN';
+    recognition.lang = localStorage.getItem('civic_user_bcp47') || currentSpeechLang || 'te-IN';
 
     recognition.onstart = () => {
       isRecording = true;
       document.getElementById('micBtn').classList.add('pulse-mic');
       document.getElementById('micIcon').className = 'fa-solid fa-square text-rose-600';
-      document.getElementById('recordingStatus').textContent = 'Recording Active... Speak continuously (pauses are supported). Tap mic to finish.';
+      document.getElementById('recordingStatus').textContent = 'Recording Active... Speak continuously. Tap mic to finish.';
       document.getElementById('recordingStatus').classList.add('text-rose-600');
     };
 
     recognition.onresult = (event) => {
-      let transcript = '';
+      let currentSessionText = '';
       for (let i = 0; i < event.results.length; i++) {
-        transcript += event.results[i][0].transcript + ' ';
+        currentSessionText += event.results[i][0].transcript + ' ';
       }
-      document.getElementById('originalNote').value = transcript.trim();
+      const fullRaw = (accumulatedSpeechText ? accumulatedSpeechText + ' ' : '') + currentSessionText;
+      document.getElementById('originalNote').value = cleanDuplicateWords(fullRaw);
     };
 
     recognition.onerror = (event) => {
@@ -446,7 +462,7 @@ function initSpeechRecognition() {
     };
 
     recognition.onend = () => {
-      // Auto-restart if user has not manually clicked stop button
+      accumulatedSpeechText = document.getElementById('originalNote').value.trim();
       if (userWantsRecording) {
         try {
           recognition.start();
@@ -470,6 +486,7 @@ function toggleVoiceRecording() {
   if (isRecording || userWantsRecording) {
     userWantsRecording = false;
     isRecording = false;
+    accumulatedSpeechText = '';
     if (recognition) {
       try { recognition.stop(); } catch(e){}
     }
@@ -478,6 +495,7 @@ function toggleVoiceRecording() {
     if (recognition) {
       try { recognition.stop(); } catch(e){}
     }
+    accumulatedSpeechText = document.getElementById('originalNote').value.trim();
     initSpeechRecognition();
     userWantsRecording = true;
     try {
@@ -495,6 +513,7 @@ function toggleVoiceRecording() {
 function stopRecordingUI() {
   isRecording = false;
   userWantsRecording = false;
+  accumulatedSpeechText = '';
   const micBtn = document.getElementById('micBtn');
   if (micBtn) micBtn.classList.remove('pulse-mic');
   document.getElementById('micIcon').className = 'fa-solid fa-microphone text-teal-800';
