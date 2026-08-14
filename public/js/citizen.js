@@ -879,7 +879,10 @@ function showSuccessModal(data) {
   document.getElementById('resCategory').textContent = catName;
   
   const offEl = document.getElementById('resOfficer');
-  if (data.assigned_officer && data.assigned_officer.is_assigned) {
+  if (data.is_multi_department && data.assigned_officers && data.assigned_officers.length > 0) {
+    const multiList = data.assigned_officers.map(o => `<div>👮 <b>${o.department_name}</b>: ${o.officer_name} ${o.officer_mobile ? '(' + o.officer_mobile + ')' : ''}</div>`).join('');
+    offEl.innerHTML = `<div class="space-y-1 text-xs font-semibold text-emerald-800"><div class="text-amber-700 font-extrabold uppercase tracking-wide">🎯 MULTI-DEPARTMENT DISPATCH (${data.assigned_officers.length} OFFICERS ASSIGNED):</div>${multiList}</div>`;
+  } else if (data.assigned_officer && data.assigned_officer.is_assigned) {
     officerName = data.assigned_officer.name;
     offEl.textContent = `${data.assigned_officer.name} (${data.assigned_officer.mobile})`;
     offEl.className = 'font-semibold text-emerald-700';

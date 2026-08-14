@@ -215,14 +215,30 @@ router.post('/complaints', async (req, res) => {
     // 1. AI Analysis
     const aiAnalysis = await analyzeGrievance(original_note, cleanVill, cleanMand, availableDepts, user_language);
 
-    // 2. Find Assigned Officer
-    const officer = await db.findOfficerForComplaint(cleanVill, cleanMand, aiAnalysis.category_id);
-    const officerMobile = officer ? officer.mobile : '';
-    const officerName = officer ? officer.name : 'Officer Not Assigned Yet (Pending Admin Allocation)';
+    // 2. Find Assigned Officers for all matched departments
+    const matchedDepts = aiAnalysis.matched_departments || [{ id: aiAnalysis.category_id, name: aiAnalysis.category_name }];
+    const assignedOfficers = [];
+
+    for (const dept of matchedDepts) {
+      const off = await db.findOfficerForComplaint(cleanVill, cleanMand, dept.id);
+      assignedOfficers.push({
+        department_id: dept.id,
+        department_name: dept.name,
+        officer_name: off ? off.name : 'Central Admin Cell',
+        officer_mobile: off ? off.mobile : '',
+        is_assigned: !!off
+      });
+    }
+
+    const primaryOfficer = assignedOfficers[0];
+    const officerMobile = primaryOfficer ? primaryOfficer.officer_mobile : '';
+    const officerName = primaryOfficer ? primaryOfficer.officer_name : 'Central Admin Cell';
 
     let finalSummary = aiAnalysis.ai_summary;
-    if (!officer) {
-      finalSummary = `⚠️ NOTICE: No dedicated field officer is currently registered in database for [${aiAnalysis.category_name}] in ${cleanVill}, ${cleanMand}. Complaint automatically assigned to Central Admin Cell for manual allocation.`;
+    if (aiAnalysis.is_multi_department) {
+      const deptListStr = matchedDepts.map(d => d.name).join(' & ');
+      const offListStr = assignedOfficers.map(o => `${o.officer_name} (${o.department_name})`).join(', ');
+      finalSummary = `🎯 MULTI-DEPARTMENT DISPATCH (${matchedDepts.length} Sectors: ${deptListStr}). Assigned Officers: ${offListStr}. ${aiAnalysis.ai_summary}`;
     }
 
     // 3. Save Complaint with 8-digit Tracking ID
@@ -237,13 +253,31 @@ router.post('/complaints', async (req, res) => {
       village: cleanVill,
       mandal: cleanMand,
       category_id: aiAnalysis.category_id,
-      category_name: aiAnalysis.category_name,
+      category_name: aiAnalysis.is_multi_department ? aiAnalysis.multi_department_names : aiAnalysis.category_name,
       severity: aiAnalysis.severity,
       ai_summary: finalSummary,
       status: 'PENDING'
     };
 
     const createdComplaint = await db.createComplaint(complaintData);
+
+    // Save secondary complaints for secondary officers so they also see it on their Officer Dashboard!
+    if (aiAnalysis.is_multi_department && matchedDepts.length > 1) {
+      for (let i = 1; i < matchedDepts.length; i++) {
+        const secDept = matchedDepts[i];
+        const subData = {
+          ...complaintData,
+          category_id: secDept.id,
+          category_name: secDept.name,
+          ai_summary: `[LINKED MULTI-DEPT TICKET #${createdComplaint.tracking_id}] ${finalSummary}`
+        };
+        try {
+          await db.createComplaint(subData);
+        } catch (subErr) {
+          console.warn('Sub-complaint dispatch note:', subErr.message);
+        }
+      }
+    }
 
     // 4. Generate PDF Report
     let pdfPath = '';
@@ -259,7 +293,7 @@ router.post('/complaints', async (req, res) => {
     const whatsappMessage = 
       `CIVIC EMERGENCY ALERT\n\n` +
       `Tracking ID: #${createdComplaint.tracking_id}\n` +
-      `Category: ${aiAnalysis.category_name}\n` +
+      `Category: ${createdComplaint.category_name}\n` +
       `Severity: ${aiAnalysis.severity}\n` +
       `Citizen Mobile: ${citizen_mobile}\n` +
       `Location: ${village}, ${mandal}\n` +
@@ -269,11 +303,6 @@ router.post('/complaints', async (req, res) => {
 
     const whatsappURL = `https://api.whatsapp.com/send?phone=91${officerMobile}&text=${encodeURIComponent(whatsappMessage)}`;
 
-        // 6. Dispatch Real Twilio SMS & WhatsApp Alerts in Citizen's Native Selected Language
-    const citizenMsg = twilioService.buildMultilingualNotification('REGISTERED', aiAnalysis.detected_language || user_language, {
-      tracking_id: createdComplaint.tracking_id,
-      officer_name: officerName,
-      officer_mobile: officerMobile,
       village: cleanVill,
       mandal: cleanMand
     });
