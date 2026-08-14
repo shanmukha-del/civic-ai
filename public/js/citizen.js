@@ -124,65 +124,60 @@ const locationData = {
 
 const locationTranslations = {
   // States
-  "Andhra Pradesh": { te: "ఆంధ్రప్రదేశ్", hi: "आंध्र प्रदेश", ta: "ஆந்திரப் பிரதேசம்", kn: "ಆಂಧ್ರಪ್ರದೇಶ" },
-  "Telangana": { te: "తెలంగాణ", hi: "तेलंगाना", ta: "தெலுங்கானா", kn: "ತೆಲಂಗಾಣ" },
-  "Karnataka": { te: "కర్ణాటక", hi: "कर्नाटक", ta: "கர்நாடகா", kn: "ಕರ್ನಾಟಕ" },
-  "Tamil Nadu": { te: "తమిళనాడు", hi: "तमिलनाडु", ta: "தமிழ்நாடு", kn: "ತಮಿಳುನಾಡು" },
+  "Andhra Pradesh": { te: "ఆంధ్రప్రదేశ్", hi: "आंध्र प्रदेश", ta: "ஆந்திரப் பிரதேசம்", kn: "ಆಂಧ್ರಪ್ರದೇಶ", bn: "অন্ধ্রপ্রদেশ", mr: "आंध्र प्रदेश", gu: "આંધ્રપ્રદેશ", or: "ଆନ୍ଧ୍ର ପ୍ରଦେଶ", ml: "ആന്ധ്രാപ്രദേശ്", pa: "ਆਧਰਾ ਪ੍ਰਦੇਸ਼", as: "অন্ধ্ৰ প্ৰদেশ" },
+  "Telangana": { te: "తెలంగాణ", hi: "तेलंगाना", ta: "தெலுங்கானா", kn: "ತೆಲಂಗಾಣ", bn: "তেলেঙ্গানা", mr: "तेलंगणा", gu: "તેલંગાણા", or: "ତେଲେଙ୍ଗାନା", ml: "തെലങ്കാന", pa: "ਤੇਲੰਗਾਨਾ", as: "তেলেংগানা" },
+  "Karnataka": { te: "కర్ణాటక", hi: "कर्नाटक", ta: "கர்நாடகா", kn: "ಕರ್ನಾಟಕ", bn: "কর্ণাটক", mr: "कर्नाटक", gu: "કર્ણાટક", or: "କର୍ଣ୍ଣାଟକ", ml: "കർണാടക", pa: "ਕਰਨਾਟਕ", as: "কৰ্ণাটক" },
+  "Tamil Nadu": { te: "తమిళనాడు", hi: "तमिलनाडु", ta: "தமிழ்நாடு", kn: "ತಮಿಳುನಾಡು", bn: "তামিলনাড়ু", mr: "तमिळनाडू", gu: "તમિલનાડુ", or: "ତାମିଲନାଡୁ", ml: "തമിഴ്‌നാട്", pa: "ਤਮਿਲਨਾਡੂ", as: "তামিলনাডু" },
 
   // Districts
-  "Chittoor": { te: "చిత్తూరు", hi: "चित्तूर", ta: "சித்தூர்", kn: "ಚಿತ್ತೂರು" },
-  "Tirupati": { te: "తిరుపతి", hi: "तिरुपति", ta: "திருப்பதி", kn: "ತಿರುಪತಿ" },
-  "Annamayya": { te: "అన్నమయ్య", hi: "अन्नमय्या", ta: "அன்னமய்யா", kn: "ಅನ್ನಮಯ್ಯ" },
-  "YSR Kadapa": { te: "వైఎస్సార్ కడప", hi: "कडपा", ta: "கடப்பா", kn: "ಕಡಪ" },
-  "Anantapur": { te: "అనంతపురం", hi: "अनंतपुर", ta: "அனந்தபூர்", kn: "ಅನಂತಪುರ" },
-  "Guntur": { te: "గుంటూరు", hi: "गुंटूर", ta: "குண்டூர்", kn: "గుంటూరు" },
-  "Visakhapatnam": { te: "విశాఖపట్నం", hi: "विशाखापट्टनम", ta: "விசாகப்பட்டினம்", kn: "ವಿಶಾಖಪಟ್ಟಣం" },
-  "Hyderabad": { te: "హైదరాబాద్", hi: "हैदराबाद", ta: "ஹைதராபாத்", kn: "ಹೈದರಾಬಾದ್" },
-  "Rangareddy": { te: "రంగారెడ్డి", hi: "रंगारेड्डी", ta: "ரங்காரெட்டி", kn: "ರಂಗಾರೆಡ್ಡಿ" },
-  "Warangal": { te: "వరంగల్", hi: "वरंगल", ta: "வரங்கல்", kn: "ವರಂಗಲ್" },
-  "Bengaluru Urban": { te: "బెంగళూరు అర్బన్", hi: "बेंगलुरु शहरी", ta: "பெங்களூரு", kn: "ಬೆಂಗಳೂರು ನಗರ" },
-  "Kolar": { te: "కోలార్", hi: "कोलार", ta: "கோலார்", kn: "ಕೋಲಾರ" },
-  "Chennai": { te: "చెన్నై", hi: "चेन्नई", ta: "சென்னை", kn: "ಚೆನ್ನೈ" },
-  "Tiruvallur": { te: "తిరువళ్లూరు", hi: "तिरुवल्लूर", ta: "திருவள்ளூர்", kn: "ತಿರುವಳ್ಳೂರು" },
+  "Chittoor": { te: "చిత్తూరు", hi: "चित्तूर", ta: "சித்தூர்", kn: "ಚಿತ್ತೂರು", bn: "চিত্তুর", mr: "चित्तूर", gu: "ચિત્તૂર", or: "ଚିତ୍ତୋର", ml: "ചിറ്റൂർ", pa: "ਚਿੱਤੂਰ", as: "চিত্তুৰ" },
+  "Tirupati": { te: "తిరుపతి", hi: "तिरुपति", ta: "திருப்பதி", kn: "ತಿರುಪತಿ", bn: "তিরুপতি", mr: "तिरुपती", gu: "તિરુપતિ", or: "ତିରୁପତି", ml: "തിരുപ്പതി", pa: "ਤਿਰੁਪਤੀ", as: "তিৰুপতি" },
+  "Annamayya": { te: "అన్నమయ్య", hi: "अन्नमय्या", ta: "அன்னமய்யா", kn: "ಅನ್ನಮಯ್ಯ", bn: "অন্নময়্যা", mr: "अन्नमय्या", gu: "અન્નમય્યા", or: "ଅନ୍ନମୟା", ml: "അന്നമയ്യ", pa: "ਅੰਨਾਮੱਯਾ", as: "অন্নময়্যা" },
+  "YSR Kadapa": { te: "వైఎస్సార్ కడప", hi: "कडपा", ta: "கடப்பா", kn: "ಕಡಪ", bn: "কাডাপা", mr: "कडप्पा", gu: "કડપા", or: "କଡ଼ପା", ml: "കടപ്പ", pa: "ਕੜਪਾ", as: "কদপা" },
+  "Anantapur": { te: "అనంతపురం", hi: "अनंतपुर", ta: "அனந்தபூர்", kn: "ಅನಂತಪುರ", bn: "অনন্তপুর", mr: "अनंतपूर", gu: "અનંતપુર", or: "ଅନନ୍ତପୁର", ml: "അനന്തപൂർ", pa: "ਅਨੰਤਪੁਰ", as: "অনন্তপুৰ" },
+  "Guntur": { te: "గుంటూరు", hi: "गुंटूर", ta: "குண்டூர்", kn: "ಗುಂಟೂರು", bn: "গুন্টুর", mr: "गुंटूर", gu: "ગુંટૂર", or: "ଗୁଣ୍ଟୁର", ml: "ഗുണ്ടൂർ", pa: "ਗੁੰਟੂਰ", as: "গুণ্টুৰ" },
+  "Visakhapatnam": { te: "విశాఖపట్నం", hi: "विशाखापट्टनम", ta: "விசாகப்பட்டினம்", kn: "ವಿಶಾಖಪಟ್ಟಣಂ", bn: "বিশাখাপত্তনম", mr: "विशाखापट्टणम", gu: "વિશાખાપટ્ટનમ", or: "ବିଶାଖାପାଟଣା", ml: "വിശാഖപട്ടണം", pa: "ਵਿਸ਼ਾਖਾਪਟਨਮ", as: "বিশাখাপত্তনম" },
+  "Hyderabad": { te: "హైదరాబాద్", hi: "हैदराबाद", ta: "ஹைதராபாத்", kn: "ಹೈದರಾಬಾದ್", bn: "হায়দ্রাবাদ", mr: "हैदराबाद", gu: "હૈદરાબાદ", or: "ହାଇଦ୍ରାବାଦ", ml: "ഹൈദരാബാദ്", pa: "ਹੈਦਰਾਬਾਦ", as: "হাইদৰাবাদ" },
+  "Rangareddy": { te: "రంగారెడ్డి", hi: "रंगारेड्डी", ta: "ரங்காரெட்டி", kn: "ರಂಗಾರೆಡ್ಡಿ", bn: "রঙ্গারেড্ডি", mr: "रंगारेड्डी", gu: "રંગારેડ્ડી", or: "ରଙ୍ଗାରେଡ୍ଡୀ", ml: "രംഗറെഡ്ഡി", pa: "ਰੰਗਾਰੇੱਡੀ", as: "ৰংগাৰেড্ডী" },
+  "Warangal": { te: "వరంగల్", hi: "वरंगल", ta: "வரங்கல்", kn: "ವರಂಗಲ್", bn: "ওয়ারাঙ্গাল", mr: "वरंगळ", gu: "વરંગલ", or: "ୱାରଙ୍ଗାଲ", ml: "വാറങ്കൽ", pa: "ਵਰੰਗਲ", as: "ৱাৰাংগাল" },
+  "Bengaluru Urban": { te: "బెంగళూరు అర్బన్", hi: "बेंगलुरु शहरी", ta: "பெங்களூரு", kn: "ಬೆಂಗಳೂರು ನಗರ", bn: "বেঙ্গালুরু", mr: "बंगळुरू", gu: "બેંગલુરુ", or: "ବେଙ୍ଗାଲୁରୁ", ml: "ബാംഗ്ലൂർ", pa: "ਬੈਂਗਲੁਰੂ", as: "বেংগালুৰু" },
 
   // Mandals
-  "Penumur": { te: "పెనుమూరు", hi: "पेनुमूर", ta: "பெனுமூர்", kn: "ಪೆನುಮೂರು" },
-  "Kuppam": { te: "కుప్పం", hi: "कुप्पम", ta: "குப்பம்", kn: "ಕುಪ್ಪಂ" },
-  "Palamaner": { te: "పలమనేరు", hi: "पलमनेर", ta: "பலமனேர்", kn: "ಪಲಮನೇರು" },
-  "Bangarupalem": { te: "బంగారుపాళెం", hi: "बंजारुपालेम", ta: "பங்கருபாலையம்", kn: "ಬಂಗಾರುಪಾಳ್ಯಂ" },
-  "Chittoor Urban": { te: "చిత్తూరు అర్బన్", hi: "चित्तूर शहरी", ta: "சித்தூர் நகர்ப்புறம்", kn: "ಚಿತ್ತೂರು ನಗರ" },
-  "Chittoor Rural": { te: "చిత్తూరు రూరల్", hi: "चित्तूर ग्रामीण", ta: "சித்தூர் கிராமப்புறம்", kn: "చిತ್ತೂರು గ్రామీణ" },
-  "Gangadhara Nellore": { te: "గంగాధర నెల్లూరు", hi: "गंगाधर नेल्लोर", ta: "கங்காதர நெல்லூர்", kn: "గంగాధర నెల్లూరు" },
-  "Nagari": { te: "నగరి", hi: "नगरी", ta: "நகரி", kn: "నగరి" },
-  "Karvetinagar": { te: "కార్వేటినగరం", hi: "कार्वेटीनगर", ta: "கார்வேட்டிநகரம்", kn: "కార్వేటినగరం" },
-  "Tirupati Urban": { te: "తిరుపతి అర్బన్", hi: "तिरुपति शहरी", ta: "திருப்பதி நகர்ப்புறம்", kn: "ತಿರುಪತಿ ನಗರ" },
-  "Tirupati Rural": { te: "తిరుపతి రూరల్", hi: "तिरुपति ग्रामीण", ta: "திருப்பதி கிராமப்புறம்", kn: "ತಿರುపతి గ్రామీణ" },
-  "Chandragiri": { te: "చంద్రగిరి", hi: "चंद्रगिरि", ta: "சந்திரகிரி", kn: "చంద్రగిరి" },
-  "Renigunta": { te: "రేణిగుంట", hi: "रेणिगुंटा", ta: "ரேணிகுண்டா", kn: "రేణిగుంట" },
-  "Sri Kalahasti": { te: "శ్రీకాళహస్తి", hi: "श्रीकालहस्ती", ta: "ஸ்ரீ காளஹஸ்தி", kn: "శ్రీకాళహస్తి" },
-  "Puttur": { te: "పుత్తూరు", hi: "पुत्तूर", ta: "புத்தூர்", kn: "పుత్తూరు" },
-  "Madanapalle": { te: "మదనపల్లె", hi: "मदनपल्ले", ta: "மதனபல்லி", kn: "ಮದನಪಲ್ಲೆ" },
-  "Rayachoti": { te: "రాయచోటి", hi: "रायाचोटी", ta: "ராயச்சோட்டி", kn: "రాయచోటి" },
-  "Rajampet": { te: "రాజంపేట", hi: "राजमपेट", ta: "ராஜம்பேட்டை", kn: "రాజంపేట" },
-  "Pileru": { te: "పిలేరు", hi: "पिलेरू", ta: "பிலேரு", kn: "పిలేరు" },
-  "Khairatabad": { te: "ఖైరతాబాద్", hi: "खैरताबाद", ta: "கைரதாபாத்", kn: "ಖೈರತಾಬಾದ್" },
-  "Secunderabad": { te: "సికింద్రాబాద్", hi: "सिकंदराबाद", ta: "செகந்திராபாத்", kn: "ಸಿಿಕಂದರಾಬಾದ್" },
-  "Serilingampally": { te: "శేరిలింగంపల్లి", hi: "शेरिलिंगमपल्ली", ta: "சேரிலிங்கம்பள்ளி", kn: "ಶೇರಿಲಿಂಗಂಪಲ್ಲಿ" },
+  "Penumur": { te: "పెనుమూరు", hi: "पेनुमूर", ta: "பெனுமூர்", kn: "ಪೆನುಮೂರು", bn: "পেনুমুর", mr: "पेनुमूर", gu: "પેનુમૂર", or: "ପେନୁମୁର", ml: "പെനുമൂർ", pa: "ਪੇਨੂਮੂਰ", as: "পেনুমুৰ" },
+  "Kuppam": { te: "కుప్పం", hi: "कुप्पम", ta: "குப்பம்", kn: "ಕುಪ್ಪಂ", bn: "কুপ্পম", mr: "कुप्पम", gu: "કુપ્પમ", or: "କୁପମ୍", ml: "കുപ്പം", pa: "ਕੁੱਪਮ", as: "কুপ্পম" },
+  "Palamaner": { te: "పలమనేరు", hi: "पलमनेर", ta: "பலமனேர்", kn: "ಪಲಮನೇರು", bn: "পলামানের", mr: "पलमनेर", gu: "પાલમાનેર", or: "ପାଲାମାନେର", ml: "പലമനേർ", pa: "ਪਲਾਮਨੇਰ", as: "পলামানের" },
+  "Bangarupalem": { te: "బంగారుపాళెం", hi: "बंजारुपालेम", ta: "பங்கருபாலையம்", kn: "ಬಂಗಾರುಪಾಳ್ಯಂ", bn: "বাঙ্গারুপালেম", mr: "बंजारुपालेम", gu: "બંગારુપાલેમ", or: "ବଙ୍ଗାରୁପାଲେମ୍", ml: "ബംഗാരുപാളയം", pa: "ਬੰਗਾਰੂਪਾਲੇਮ", as: "বাংগাৰুপালেম" },
+  "Chittoor Urban": { te: "చిత్తూరు అర్బన్", hi: "चित्तूर शहरी", ta: "சித்தூர் நகர்ப்புறம்", kn: "ಚಿತ್ತೂರು ನಗರ", bn: "চিত্তুর আরবান", mr: "चित्तूर अर्बन", gu: "ચિત્તૂર અર્બન" },
+  "Chittoor Rural": { te: "చిత్తూరు రూరల్", hi: "चित्तूर ग्रामीण", ta: "சித்தூர் கிராமப்புறம்", kn: "ಚಿತ್ತೂರು ಗ್ರಾಮೀಣ", bn: "চিত্তুর রুরাল", mr: "चित्तूर रुरल", gu: "ચિત્તૂર રૂરલ" },
+  "Gangadhara Nellore": { te: "గంగాధర నెల్లూరు", hi: "गंगाधर नेल्लोर", ta: "கங்காதர நெல்லூர்", kn: "ಗಂಗಾಧರ ನೆಲ್ಲೂರು", bn: "গঙ্গাধরা নেল্লোর" },
+  "Nagari": { te: "నగరి", hi: "नगरी", ta: "நகரி", kn: "ನಗರಿ", bn: "নাগরি", mr: "नगरी", gu: "નગરી" },
+  "Karvetinagar": { te: "కార్వేటినగరం", hi: "कार्वेटीनगर", ta: "கார்வேட்டிநகரம்", kn: "ಕಾರ್ವೇಟಿನಗರ", bn: "কারভেটিনগর" },
+  "Tirupati Urban": { te: "తిరుపతి అర్బన్", hi: "तिरुपति शहरी", ta: "திருப்பதி நகர்ப்புறம்", kn: "ತಿರುಪತಿ ನಗರ", bn: "তিরুপতি আরবান" },
+  "Tirupati Rural": { te: "తిరుపతి రూరల్", hi: "तिरुपति ग्रामीण", ta: "திருப்பதி கிராமப்புறம்", kn: "ತಿರುಪತಿ ಗ್ರಾಮೀಣ", bn: "তিরুপতি রুরাল" },
+  "Chandragiri": { te: "చంద్రగిరి", hi: "चंद्रगिरि", ta: "சந்திரகிரி", kn: "ಚಂದ್ರಗಿರಿ", bn: "চন্দ্রগিরি", mr: "चंद्रगिरी", gu: "ચંદ્રગિરી" },
+  "Renigunta": { te: "రేణిగుంట", hi: "रेणिगुंटा", ta: "ரேணிகுண்டா", kn: "ರೇಣಿಗುಂಟ", bn: "রেণিগুণ্টা", mr: "रेणिगुंटा", gu: "રેણિગુન્ટા" },
+  "Sri Kalahasti": { te: "శ్రీకాళహస్తి", hi: "श्रीकालहस्ती", ta: "ஸ்ரீ காளஹஸ்தி", kn: "శ్రీకాళహస్తి", bn: "শ্রীকালহস্তী" },
+  "Puttur": { te: "పుత్తూరు", hi: "पुत्तूर", ta: "புத்தூர்", kn: "ಪುತ್ತೂರು", bn: "পুত্তুর", mr: "पुत्तूर", gu: "પુત્તૂર" },
+  "Madanapalle": { te: "మదనపల్లె", hi: "मदनपल्ले", ta: "மதனபல்லி", kn: "ಮದನಪಲ್ಲೆ", bn: " মদনাপল্লে", mr: "मदनपल्ले", gu: "મદનાપલ્લે" },
 
   // Villages
-  "Sanjiviravanipalle": { te: "సంజీవిరాయనిపల్లె", hi: "संजीवरायानिपल्ले" },
-  "Virupakshapuram": { te: "విరూపాక్షపురం", hi: "विरुपाक्षापुरम" },
-  "Kalavagunta": { te: "కలవగుంట", hi: "कलवगुंटा" },
-  "Kondepalle": { te: "కొండెలపల్లె", hi: "कोंडेपल्ले" },
-  "Gullapalle": { te: "గుల్లాపల్లె", hi: "गुल्लापल्ले" },
-  "Nelavoy": { te: "నేలవోయ్", hi: "नेलवॉय" },
-  "Kangundi": { te: "కంగాంధి", hi: "कांगुंडी" },
-  "Rallabuduguru": { te: "రాళ్లబూదుగూరు", hi: "राल्लाबुदुगुरु" }
+  "Sanjiviravanipalle": { te: "సంజీవిరాయనిపల్లె", hi: "संजीवरायानिपल्ले", bn: "সঞ্জীব রায়ানি পল্লে", ta: "சஞ்சீவிராயனிபள்ளி", kn: "ಸಂಜೀವರಾಯನಿಪಲ್ಲಿ" },
+  "Virupakshapuram": { te: "విరూపాక్షపురం", hi: "विरुपाक्षापुरम", bn: "বিরূপাক্ষপুরম", ta: "விருபாக்ஷபுரம்", kn: "ವಿರೂಪಾಕ್ಷಪುರಂ" },
+  "Kalavagunta": { te: "కలవగుంట", hi: "कलवगुंटा", bn: "কালবগুণ্টা", ta: "கலவகுண்டா", kn: "കലവഗുന്റ" },
+  "Kondepalle": { te: "కొండెలపల్లె", hi: "कोंडेपल्ले", bn: "কোন্ডেপল্লে", ta: "கொண்டேபள்ளி", kn: "ಕೊಂಡೇಪಲ್ಲಿ" },
+  "Gullapalle": { te: "గుల్లాపల్లె", hi: "गुल्लापल्ले", bn: "গুল্লাপল্লে", ta: "குல்லாபள்ளி", kn: "ಗುಲ್ಲಾಪಲ್ಲಿ" },
+  "Nelavoy": { te: "నేలవోయ్", hi: "नेलवॉय", bn: "নেলভয়", ta: "நெலவோய்", kn: "ನೆಲವೋಯ್" },
+  "Kangundi": { te: "కంగాంధి", hi: "कांगुंडी", bn: "কাঙ্গুন্ডি", ta: "காங்குண்டி", kn: "ಕಾಂಗುಂಡಿ" },
+  "Rallabuduguru": { te: "రాళ్లబూదుగూరు", hi: "राल्लाबुदुगुरु", bn: "রাল্লাবুদুগুরু", ta: "ராள்ளபுதுகுரு", kn: "ರಾಳ್ಳಬುಡುಗುರು" }
 };
 
 function getLocalizedLocationName(name) {
   if (!name) return '';
-  const langCode = (localStorage.getItem('civic_user_bcp47') || currentSpeechLang || 'te-IN').split('-')[0];
+  const bcp47 = localStorage.getItem('civic_user_bcp47') || currentSpeechLang || 'en-IN';
+  const langCode = bcp47.split('-')[0].toLowerCase();
+  
+  if (langCode === 'en') return name;
+
   const item = locationTranslations[name];
   if (item && item[langCode]) {
     return `${item[langCode]} (${name})`;
@@ -190,8 +185,39 @@ function getLocalizedLocationName(name) {
   return name;
 }
 
+function repopulateLocationDropdownsInSelectedLanguage() {
+  const stateSel = document.getElementById('stateSelect');
+  const distSel = document.getElementById('districtSelect');
+  const mandalSel = document.getElementById('mandalSelect');
+  const villSel = document.getElementById('villageSelect');
+
+  if (stateSel) {
+    Array.from(stateSel.options).forEach(opt => {
+      if (opt.value) opt.textContent = getLocalizedLocationName(opt.value);
+    });
+  }
+  if (distSel) {
+    Array.from(distSel.options).forEach(opt => {
+      if (opt.value) opt.textContent = getLocalizedLocationName(opt.value);
+    });
+  }
+  if (mandalSel) {
+    Array.from(mandalSel.options).forEach(opt => {
+      if (opt.value) opt.textContent = getLocalizedLocationName(opt.value);
+    });
+  }
+  if (villSel) {
+    Array.from(villSel.options).forEach(opt => {
+      if (opt.value) opt.textContent = getLocalizedLocationName(opt.value);
+    });
+  }
+}
+
 function initCascadingLocations() {
   const stateSel = document.getElementById('stateSelect');
+  const distSel = document.getElementById('districtSelect');
+  const mandalSel = document.getElementById('mandalSelect');
+  const villSel = document.getElementById('villageSelect');
   if (!stateSel) return;
 
   stateSel.innerHTML = '<option value="">-- Select State --</option>';
@@ -202,8 +228,25 @@ function initCascadingLocations() {
     stateSel.appendChild(opt);
   });
 
-  stateSel.value = 'Andhra Pradesh';
-  onStateChanged();
+  // DO NOT force default AP, Chittoor, or Penumur! Leave dropdowns empty!
+  stateSel.value = "";
+  if (distSel) {
+    distSel.innerHTML = '<option value="">-- Select State First --</option>';
+    distSel.disabled = true;
+  }
+  if (mandalSel) {
+    mandalSel.innerHTML = '<option value="">-- Select District First --</option>';
+    mandalSel.disabled = true;
+  }
+  if (villSel) {
+    villSel.innerHTML = '<option value="">-- Select Mandal First --</option>';
+    villSel.disabled = true;
+  }
+
+  const mandalInp = document.getElementById('mandalInput');
+  const villInp = document.getElementById('villageInput');
+  if (mandalInp) mandalInp.value = "";
+  if (villInp) villInp.value = "";
 }
 
 function onStateChanged() {
@@ -228,11 +271,7 @@ function onStateChanged() {
       opt.textContent = getLocalizedLocationName(dst);
       distSel.appendChild(opt);
     });
-
-    if (districts.length > 0) {
-      distSel.value = districts[0];
-      onDistrictChanged();
-    }
+    distSel.value = "";
   } else {
     distSel.disabled = true;
   }
@@ -263,10 +302,7 @@ function onDistrictChanged() {
       mandalSel.appendChild(opt);
     });
 
-    if (mandals.length > 0) {
-      mandalSel.value = mandals[0];
-      onMandalChanged();
-    }
+    mandalSel.value = "";
   } else {
     mandalSel.disabled = true;
   }
@@ -297,10 +333,7 @@ function onMandalChanged() {
       villSel.appendChild(opt);
     });
 
-    if (villages.length > 0) {
-      villSel.value = villages[0];
-      onVillageChanged();
-    }
+    villSel.value = "";
   } else {
     villSel.disabled = true;
   }
@@ -404,6 +437,8 @@ function selectPortalLanguage(langCode, bcp47, langName) {
   if (typeof changeLanguage === 'function') {
     changeLanguage(langCode);
   }
+
+  repopulateLocationDropdownsInSelectedLanguage();
 
   const langOverlay = document.getElementById('langScreenOverlay');
   if (langOverlay) {
