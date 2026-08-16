@@ -26,101 +26,8 @@ function cleanLocationString(str) {
     .trim();
   return cleaned;
 }
+// Note: Real LGD administrative location dataset (AP & TS) is authoritatively loaded via /js/locations.js and stored in window.locationData
 
-const locationData = {
-  "Andhra Pradesh": {
-    "Chittoor": {
-      "Penumur": ["Penumur", "Sanjiviravanipalle", "Virupakshapuram", "Kalavagunta", "Kondepalle", "Gullapalle", "Nelavoy"],
-      "Kuppam": ["Kuppam", "Yamiganipalle", "Peddabapanapalle", "Kangundi", "Chinnagollapalle", "Rallabuduguru"],
-      "Palamaner": ["Palamaner", "Gagganapalle", "Jagamarla", "Keelapatla", "Pengaragunta"],
-      "Bangarupalem": ["Bangarupalem", "Mogili", "Tekumanda", "Ragimanupalle", "Thumbakuppam"],
-      "Chittoor Urban": ["Chittoor Town", "Ganganapalle", "Murukambattu", "Kattamanchi", "Mittoor"],
-      "Chittoor Rural": ["Anagallu", "Bandapalle", "Gudipala", "Tenebanda", "Mapakshi"],
-      "Gangadhara Nellore": ["Gangadhara Nellore", "Narasamambapuram", "Pillari Kuppam", "Agaram"],
-      "Nagari": ["Nagari", "Bugga", "Keelapudi", "Melapattu", "Satrawada"],
-      "Karvetinagar": ["Karvetinagar", "Annur", "Kesavareddipalle", "Sri Rangarajapuram"]
-    },
-    "Tirupati": {
-      "Tirupati Urban": ["Tirupati City", "Alipiri", "Tiruchanoor", "Renigunta Road", "Bairagipatteda"],
-      "Tirupati Rural": ["Peruru", "Avilala", "Daminedu", "Thondavada", "Chandragiri Road"],
-      "Chandragiri": ["Chandragiri", "Agarala", "Ithepalle", "Sanambatla", "Doranakambala"],
-      "Renigunta": ["Renigunta", "Karakambadi", "Gajulamandyam", "Thottambedu", "Anagunta"],
-      "Sri Kalahasti": ["Sri Kalahasti", "Panagal", "Thottambedu", "Kavanur", "Urandur"],
-      "Puttur": ["Puttur", "Nandi Samudram", "Vadamalapeta", "Thorur", "Cherlopalle"]
-    },
-    "Annamayya": {
-      "Madanapalle": ["Madanapalle", "Basinikonda", "Anasagaram", "Panchalingala", "Kollabylu"],
-      "Rayachoti": ["Rayachoti", "Masapet", "Gulcheru", "Abbavaram", "Sambepalle"],
-      "Rajampet": ["Rajampet", "Bakarapet", "Utukur", "Tallapaka", "Brahmanapalle"],
-      "Pileru": ["Pileru", "Agali", "Bodumalluvaripalle", "Kalisiri", "Melumoi"]
-    },
-    "YSR Kadapa": {
-      "Kadapa": ["Kadapa Town", "Rami Reddi Palle", "Buggalets", "Akkayapalle", "Utukur"],
-      "Proddatur": ["Proddatur", "Bollavaram", "Dorasanipalle", "Rameswaram", "Korrapadu"],
-      "Jammalamadugu": ["Jammalamadugu", "Gandikota", "Moragudi", "Peddadandluru", "Sugamanchipalle"],
-      "Pulivendula": ["Pulivendula", "Bakarapuram", "Rachuntapalle", "Vempalle", "Lingala"]
-    },
-    "Anantapur": {
-      "Anantapur": ["Anantapur City", "Kakkalapalle", "Papampeta", "Itikalapalle", "Alamuru"],
-      "Guntakal": ["Guntakal", "Netticallu", "Kasapuram", "Dhone Road", "Timmanacherla"],
-      "Tadipatri": ["Tadipatri", "Chinnapolamada", "Bhogasamudram", "Sajjjaladinne", "Yellanuru"],
-      "Dharmavaram": ["Dharmavaram", "Kothapeta", "Subbaraopeta", "Gotkur", "Regatipalle"]
-    },
-    "Guntur": {
-      "Guntur Urban": ["Guntur City", "Pattabhipuram", "Broadpet", "Gorantla", "Nallapadu"],
-      "Tenali": ["Tenali", "Pinapadu", "Angalakuduru", "Nandivelugu", "Kopalle"],
-      "Mangalagiri": ["Mangalagiri", "Atmakuru", "Navuluru", "Nidamarru", "Kaza"],
-      "Narasaraopet": ["Narasaraopet", "Jonnalagadda", "Mulakaluru", "Palapad", "Ravipadu"]
-    },
-    "Visakhapatnam": {
-      "Visakhapatnam Urban": ["Visakhapatnam City", "MVP Colony", "Gajuwaka", "Gopalapatnam", "Madhurawada"],
-      "Anakapalle": ["Anakapalle", "Kasimkota", "Sankaram", "Woodpeta", "Thotada"],
-      "Bheemunipatnam": ["Bheemunipatnam", "Kapuluppada", "Nallanukonda", "Majjivani Peta", "Nereduvalasa"]
-    }
-  },
-  "Telangana": {
-    "Hyderabad": {
-      "Khairatabad": ["Khairatabad", "Somajiguda", "Ameerpet", "Punjagutta", "Banjara Hills"],
-      "Secunderabad": ["Secunderabad", "Marredpally", "Begumpet", "Tarnaka", "Sitaphalmandi"],
-      "Charminar": ["Charminar", "Mughalpura", "Shah Ali Banda", "Pathergatti", "Faluknama"],
-      "Amberpet": ["Amberpet", "Shivam Road", "Bagh Amberpet", "Vidyanagar", "DD Colony"],
-      "Serilingampally": ["Gachibowli", "Hitec City", "Madhapur", "Kondapur", "Raidurg"]
-    },
-    "Rangareddy": {
-      "Rajendranagar": ["Rajendranagar", "Attapur", "Budvel", "Hyderguda", "Bandlaguda"],
-      "Ibrahimpatnam": ["Ibrahimpatnam", "Mangalpalle", "Sheriguda", "Eliminedu", "Uppariguda"],
-      "Shamshabad": ["Shamshabad", "Ootpally", "Mamidipally", "Kottur", "Satamrai"],
-      "Chevella": ["Chevella", "Kankal", "Damargidda", "Pamena", "Aloor"]
-    },
-    "Warangal": {
-      "Hanamkonda": ["Hanamkonda", "Subedari", "Kazipet", "Waddepally", "Naimnagar"],
-      "Warangal Urban": ["Warangal City", "Marlapally", "Kashibugga", "Deshaipet", "Fort Warangal"]
-    }
-  },
-  "Karnataka": {
-    "Bengaluru Urban": {
-      "Bengaluru North": ["Hebbal", "Yelahanka", "Jalahalli", "Peenya", "Malleshwaram"],
-      "Bengaluru South": ["Jayanagar", "JP Nagar", "BTM Layout", "Banashankari", "Electronics City"],
-      "Bengaluru East": ["Whitefield", "Marathahalli", "KR Puram", "Indiranagar", "CV Raman Nagar"]
-    },
-    "Kolar": {
-      "Kolar": ["Kolar Town", "Harohalli", "Vemagal", "Sugatur", "Kyalanur"],
-      "Bangarapet": ["Bangarapet", "Desihalli", "Robertsonpet", "KGF", "Kamamasandra"],
-      "Mulbagal": ["Mulbagal", "Avani", "Tayalur", "Nangali", "Kurudumale"]
-    }
-  },
-  "Tamil Nadu": {
-    "Chennai": {
-      "Mylapore": ["Mylapore", "Mandaveli", "Alwarpet", "RA Puram", "Santhome"],
-      "T Nagar": ["T Nagar", "Kodambakkam", "West Mambalam", "Teynampet", "Ashok Nagar"],
-      "Adyar": ["Adyar", "Besant Nagar", "Thiruvanmiyur", "Velachery", "Guindy"]
-    },
-    "Tiruvallur": {
-      "Tiruttani": ["Tiruttani", "Agoor", "Murukambattu", "Paddanapattu", "Cherukanur"],
-      "Tiruvallur": ["Tiruvallur", "Perumalpattu", "Kakkalur", "Vengathur", "Ekkadu"]
-    }
-  }
-};
 
 const locationTranslations = {
   // States
@@ -775,7 +682,21 @@ async function initiateComplaintConfirmation() {
   }
 
   const user_language = localStorage.getItem('civic_user_language') || currentSpeechLang || 'te-IN';
-  pendingPayload = { citizen_mobile, original_note, village, mandal, state, district, latitude, longitude, user_language };
+  pendingPayload = {
+    citizen_mobile,
+    original_note,
+    village,
+    mandal,
+    state,
+    district,
+    latitude,
+    longitude,
+    user_language,
+    state_code: window.selectedLocation?.stateCode || null,
+    district_code: window.selectedLocation?.districtCode || null,
+    mandal_code: window.selectedLocation?.mandalCode || null,
+    village_code: window.selectedLocation?.villageCode || null
+  };
 
   // Hide Leaflet Map while modal is active so it never overlaps the Green/Red buttons
   const mapPreviewContainer = document.getElementById('mapPreview');
