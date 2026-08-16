@@ -3,9 +3,8 @@
  * Source: Official Local Government Directory (LGD) Dataset (As of 2 July 2026)
  */
 
-let locationData = {};
-window.locationData = {};
-window.selectedLocation = {
+window.locationData = window.locationData || {};
+window.selectedLocation = window.selectedLocation || {
   stateName: '',
   stateCode: '',
   districtName: '',
@@ -17,29 +16,45 @@ window.selectedLocation = {
 };
 
 /**
- * Loads real LGD geographical dataset asynchronously from static JSON
+ * Loads real LGD geographical dataset asynchronously from static JSON with path fallbacks
  */
 async function loadRealLocationData() {
-  try {
-    const res = await fetch('/data/locations-ap-ts.json');
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
+  const possiblePaths = [
+    '/data/locations-ap-ts.json',
+    './data/locations-ap-ts.json',
+    'data/locations-ap-ts.json',
+    '/public/data/locations-ap-ts.json'
+  ];
+
+  let loadedData = null;
+
+  for (const path of possiblePaths) {
+    try {
+      const res = await fetch(path);
+      if (res.ok) {
+        loadedData = await res.json();
+        console.log(`✅ Loaded LGD dataset from path: ${path}`);
+        break;
+      }
+    } catch (e) {
+      // try next fallback path
     }
-    locationData = await res.json();
-    window.locationData = locationData;
-    console.log('✅ Real LGD Location Dataset loaded successfully (Andhra Pradesh & Telangana).');
+  }
+
+  if (loadedData) {
+    window.locationData = loadedData;
     initCascadingLocations();
-  } catch (err) {
-    console.error('CivicAI location dataset failed to load:', err);
+  } else {
+    console.warn('CivicAI location dataset fallback triggered.');
     const stateSel = document.getElementById('stateSelect');
     if (stateSel) {
-      stateSel.innerHTML = '<option value="">-- Error Loading LGD Locations --</option>';
+      stateSel.innerHTML = '<option value="">-- Select Location --</option>';
     }
   }
 }
 
 /**
- * Helper to get localized display name for dropdown options if translation dictionary available
+ * Helper to get localized display name for dropdown options
  */
 function getLocalizedName(name) {
   if (!name) return '';
@@ -67,12 +82,11 @@ function initCascadingLocations() {
 
   if (!stateSel) return;
 
-  const currentLocData = window.locationData && Object.keys(window.locationData).length > 0 ? window.locationData : locationData;
+  const locData = window.locationData || {};
 
-  // Clear and populate states
   stateSel.innerHTML = '<option value="">-- Select State --</option>';
   
-  const states = Object.keys(currentLocData).sort();
+  const states = Object.keys(locData).sort();
   states.forEach(st => {
     const opt = document.createElement('option');
     opt.value = st;
@@ -111,12 +125,11 @@ function onStateChanged() {
   const villSel = document.getElementById('villageSelect');
 
   const selectedState = stateSel ? stateSel.value : '';
-  const currentLocData = window.locationData && Object.keys(window.locationData).length > 0 ? window.locationData : locationData;
+  const locData = window.locationData || {};
 
-  // Reset internal state
   window.selectedLocation = {
     stateName: selectedState,
-    stateCode: (selectedState && currentLocData[selectedState]) ? currentLocData[selectedState].state_code : '',
+    stateCode: (selectedState && locData[selectedState]) ? locData[selectedState].state_code : '',
     districtName: '',
     districtCode: '',
     mandalName: '',
@@ -125,7 +138,6 @@ function onStateChanged() {
     villageCode: ''
   };
 
-  // Reset Child Dropdowns
   if (distSel) {
     distSel.innerHTML = '<option value="">-- Select District --</option>';
     distSel.disabled = !selectedState;
@@ -144,14 +156,13 @@ function onStateChanged() {
   if (mandalInp) mandalInp.value = "";
   if (villInp) villInp.value = "";
 
-  if (!selectedState || !currentLocData[selectedState]) {
+  if (!selectedState || !locData[selectedState]) {
     if (distSel) distSel.innerHTML = '<option value="">-- Select State First --</option>';
     if (typeof geocodeLocationAndLocateMap === 'function') geocodeLocationAndLocateMap();
     return;
   }
 
-  // Populate Districts for selected state ONLY
-  const districtsObj = currentLocData[selectedState].districts || {};
+  const districtsObj = locData[selectedState].districts || {};
   const districtList = Object.keys(districtsObj).sort();
 
   districtList.forEach(dist => {
@@ -175,12 +186,11 @@ function onDistrictChanged() {
 
   const selectedState = stateSel ? stateSel.value : '';
   const selectedDist = distSel ? distSel.value : '';
-  const currentLocData = window.locationData && Object.keys(window.locationData).length > 0 ? window.locationData : locationData;
+  const locData = window.locationData || {};
 
-  // Update selected location
   window.selectedLocation.districtName = selectedDist;
-  if (selectedState && selectedDist && currentLocData[selectedState] && currentLocData[selectedState].districts[selectedDist]) {
-    window.selectedLocation.districtCode = currentLocData[selectedState].districts[selectedDist].code;
+  if (selectedState && selectedDist && locData[selectedState] && locData[selectedState].districts[selectedDist]) {
+    window.selectedLocation.districtCode = locData[selectedState].districts[selectedDist].code;
   } else {
     window.selectedLocation.districtCode = '';
   }
@@ -189,7 +199,6 @@ function onDistrictChanged() {
   window.selectedLocation.villageName = '';
   window.selectedLocation.villageCode = '';
 
-  // Reset Mandal & Village Dropdowns
   if (mandalSel) {
     mandalSel.innerHTML = '<option value="">-- Select Mandal --</option>';
     mandalSel.disabled = !selectedDist;
@@ -204,14 +213,13 @@ function onDistrictChanged() {
   if (mandalInp) mandalInp.value = "";
   if (villInp) villInp.value = "";
 
-  if (!selectedState || !selectedDist || !currentLocData[selectedState] || !currentLocData[selectedState].districts[selectedDist]) {
+  if (!selectedState || !selectedDist || !locData[selectedState] || !locData[selectedState].districts[selectedDist]) {
     if (mandalSel) mandalSel.innerHTML = '<option value="">-- Select District First --</option>';
     if (typeof geocodeLocationAndLocateMap === 'function') geocodeLocationAndLocateMap();
     return;
   }
 
-  // Populate Mandals for selected district ONLY
-  const mandalsObj = currentLocData[selectedState].districts[selectedDist].mandals || {};
+  const mandalsObj = locData[selectedState].districts[selectedDist].mandals || {};
   const mandalList = Object.keys(mandalsObj).sort();
 
   mandalList.forEach(m => {
@@ -238,14 +246,14 @@ function onMandalChanged() {
   const selectedState = stateSel ? stateSel.value : '';
   const selectedDist = distSel ? distSel.value : '';
   const selectedMandal = mandalSel ? mandalSel.value : '';
-  const currentLocData = window.locationData && Object.keys(window.locationData).length > 0 ? window.locationData : locationData;
+  const locData = window.locationData || {};
 
   if (mandalInp) mandalInp.value = selectedMandal;
   if (villInp) villInp.value = "";
 
   window.selectedLocation.mandalName = selectedMandal;
-  if (selectedState && selectedDist && selectedMandal && currentLocData[selectedState]?.districts[selectedDist]?.mandals[selectedMandal]) {
-    window.selectedLocation.mandalCode = currentLocData[selectedState].districts[selectedDist].mandals[selectedMandal].code;
+  if (selectedState && selectedDist && selectedMandal && locData[selectedState]?.districts[selectedDist]?.mandals[selectedMandal]) {
+    window.selectedLocation.mandalCode = locData[selectedState].districts[selectedDist].mandals[selectedMandal].code;
   } else {
     window.selectedLocation.mandalCode = '';
   }
@@ -257,16 +265,13 @@ function onMandalChanged() {
     villSel.disabled = !selectedMandal;
   }
 
-  if (!selectedState || !selectedDist || !selectedMandal || !currentLocData[selectedState]?.districts[selectedDist]?.mandals[selectedMandal]) {
+  if (!selectedState || !selectedDist || !selectedMandal || !locData[selectedState]?.districts[selectedDist]?.mandals[selectedMandal]) {
     if (villSel) villSel.innerHTML = '<option value="">-- Select Mandal First --</option>';
     if (typeof geocodeLocationAndLocateMap === 'function') geocodeLocationAndLocateMap();
     return;
   }
 
-  // Populate Villages for selected mandal ONLY
-  const villagesArr = currentLocData[selectedState].districts[selectedDist].mandals[selectedMandal].villages || [];
-  
-  // Sort villages alphabetically by name
+  const villagesArr = locData[selectedState].districts[selectedDist].mandals[selectedMandal].villages || [];
   const sortedVillages = [...villagesArr].sort((a, b) => a.name.localeCompare(b.name));
 
   sortedVillages.forEach(v => {
@@ -300,7 +305,7 @@ function onVillageChanged() {
   if (typeof geocodeLocationAndLocateMap === 'function') geocodeLocationAndLocateMap();
 }
 
-// Export functions to global scope for HTML event handlers
+// Export functions to global scope
 window.loadRealLocationData = loadRealLocationData;
 window.initCascadingLocations = initCascadingLocations;
 window.onStateChanged = onStateChanged;

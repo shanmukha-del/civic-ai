@@ -157,7 +157,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   window.scrollTo(0, 0);
 
-  initCascadingLocations();
+  if (typeof initCascadingLocations === 'function') {
+    try { initCascadingLocations(); } catch(e){ console.warn('initCascadingLocations warning:', e); }
+  }
   initSplashScreen();
   initSpeechRecognition();
   detectGPSLocation();
