@@ -1,0 +1,295 @@
+{
+  "source_filename": "list-of-states-districts-sub-districts-and-villages-along-with-their-lgd-codes-as-of-2-july-2026.xlsx",
+  "source_date": "2026-07-02",
+  "generation_timestamp": "2026-08-16T06:08:38.799Z",
+  "total_source_rows": 676891,
+  "total_valid_rows": 676891,
+  "total_invalid_rows": 0,
+  "total_duplicate_rows": 0,
+  "total_states": 35,
+  "total_districts": 781,
+  "total_mandals": 7073,
+  "total_villages": 676891,
+  "state_breakdown": [
+    {
+      "state_code": 35,
+      "state_name": "Andaman And Nicobar Islands",
+      "district_count": 3,
+      "mandal_count": 9,
+      "village_count": 559,
+      "size_kb": 23
+    },
+    {
+      "state_code": 28,
+      "state_name": "Andhra Pradesh",
+      "district_count": 28,
+      "mandal_count": 688,
+      "village_count": 17957,
+      "size_kb": 684.6
+    },
+    {
+      "state_code": 12,
+      "state_name": "Arunachal Pradesh",
+      "district_count": 27,
+      "mandal_count": 209,
+      "village_count": 5491,
+      "size_kb": 194.3
+    },
+    {
+      "state_code": 18,
+      "state_name": "Assam",
+      "district_count": 35,
+      "mandal_count": 158,
+      "village_count": 28910,
+      "size_kb": 1121.9
+    },
+    {
+      "state_code": 10,
+      "state_name": "Bihar",
+      "district_count": 38,
+      "mandal_count": 537,
+      "village_count": 48927,
+      "size_kb": 1719.1
+    },
+    {
+      "state_code": 22,
+      "state_name": "Chhattisgarh",
+      "district_count": 33,
+      "mandal_count": 251,
+      "village_count": 20664,
+      "size_kb": 704.3
+    },
+    {
+      "state_code": 7,
+      "state_name": "Delhi",
+      "district_count": 13,
+      "mandal_count": 37,
+      "village_count": 353,
+      "size_kb": 15.1
+    },
+    {
+      "state_code": 30,
+      "state_name": "Goa",
+      "district_count": 3,
+      "mandal_count": 12,
+      "village_count": 429,
+      "size_kb": 14.8
+    },
+    {
+      "state_code": 24,
+      "state_name": "Gujarat",
+      "district_count": 34,
+      "mandal_count": 300,
+      "village_count": 19105,
+      "size_kb": 651.7
+    },
+    {
+      "state_code": 6,
+      "state_name": "Haryana",
+      "district_count": 23,
+      "mandal_count": 143,
+      "village_count": 7090,
+      "size_kb": 275.5
+    },
+    {
+      "state_code": 2,
+      "state_name": "Himachal Pradesh",
+      "district_count": 12,
+      "mandal_count": 193,
+      "village_count": 21593,
+      "size_kb": 838.5
+    },
+    {
+      "state_code": 1,
+      "state_name": "Jammu And Kashmir",
+      "district_count": 20,
+      "mandal_count": 208,
+      "village_count": 6857,
+      "size_kb": 227
+    },
+    {
+      "state_code": 20,
+      "state_name": "Jharkhand",
+      "district_count": 24,
+      "mandal_count": 263,
+      "village_count": 32737,
+      "size_kb": 1109.8
+    },
+    {
+      "state_code": 29,
+      "state_name": "Karnataka",
+      "district_count": 31,
+      "mandal_count": 240,
+      "village_count": 30771,
+      "size_kb": 1118
+    },
+    {
+      "state_code": 32,
+      "state_name": "Kerala",
+      "district_count": 14,
+      "mandal_count": 78,
+      "village_count": 1666,
+      "size_kb": 64.3
+    },
+    {
+      "state_code": 37,
+      "state_name": "Ladakh",
+      "district_count": 2,
+      "mandal_count": 15,
+      "village_count": 248,
+      "size_kb": 8.1
+    },
+    {
+      "state_code": 31,
+      "state_name": "Lakshadweep",
+      "district_count": 1,
+      "mandal_count": 10,
+      "village_count": 27,
+      "size_kb": 1.4
+    },
+    {
+      "state_code": 23,
+      "state_name": "Madhya Pradesh",
+      "district_count": 55,
+      "mandal_count": 445,
+      "village_count": 57496,
+      "size_kb": 1979.4
+    },
+    {
+      "state_code": 27,
+      "state_name": "Maharashtra",
+      "district_count": 35,
+      "mandal_count": 358,
+      "village_count": 44856,
+      "size_kb": 1548.1
+    },
+    {
+      "state_code": 14,
+      "state_name": "Manipur",
+      "district_count": 16,
+      "mandal_count": 65,
+      "village_count": 3850,
+      "size_kb": 143.2
+    },
+    {
+      "state_code": 17,
+      "state_name": "Meghalaya",
+      "district_count": 12,
+      "mandal_count": 56,
+      "village_count": 7203,
+      "size_kb": 262.4
+    },
+    {
+      "state_code": 15,
+      "state_name": "Mizoram",
+      "district_count": 11,
+      "mandal_count": 28,
+      "village_count": 887,
+      "size_kb": 32.9
+    },
+    {
+      "state_code": 13,
+      "state_name": "Nagaland",
+      "district_count": 17,
+      "mandal_count": 120,
+      "village_count": 1554,
+      "size_kb": 58.3
+    },
+    {
+      "state_code": 21,
+      "state_name": "Odisha",
+      "district_count": 30,
+      "mandal_count": 317,
+      "village_count": 51800,
+      "size_kb": 1808.2
+    },
+    {
+      "state_code": 34,
+      "state_name": "Puducherry",
+      "district_count": 2,
+      "mandal_count": 8,
+      "village_count": 129,
+      "size_kb": 5
+    },
+    {
+      "state_code": 3,
+      "state_name": "Punjab",
+      "district_count": 23,
+      "mandal_count": 97,
+      "village_count": 13014,
+      "size_kb": 515.6
+    },
+    {
+      "state_code": 8,
+      "state_name": "Rajasthan",
+      "district_count": 41,
+      "mandal_count": 425,
+      "village_count": 52589,
+      "size_kb": 1834.8
+    },
+    {
+      "state_code": 11,
+      "state_name": "Sikkim",
+      "district_count": 6,
+      "mandal_count": 19,
+      "village_count": 485,
+      "size_kb": 17.6
+    },
+    {
+      "state_code": 33,
+      "state_name": "Tamil Nadu",
+      "district_count": 38,
+      "mandal_count": 317,
+      "village_count": 18681,
+      "size_kb": 709.2
+    },
+    {
+      "state_code": 36,
+      "state_name": "Telangana",
+      "district_count": 33,
+      "mandal_count": 617,
+      "village_count": 11308,
+      "size_kb": 424.7
+    },
+    {
+      "state_code": 38,
+      "state_name": "The Dadra And Nagar Haveli And Daman And Diu",
+      "district_count": 3,
+      "mandal_count": 3,
+      "village_count": 101,
+      "size_kb": 3.7
+    },
+    {
+      "state_code": 16,
+      "state_name": "Tripura",
+      "district_count": 8,
+      "mandal_count": 23,
+      "village_count": 898,
+      "size_kb": 34.5
+    },
+    {
+      "state_code": 9,
+      "state_name": "Uttar Pradesh",
+      "district_count": 75,
+      "mandal_count": 350,
+      "village_count": 110308,
+      "size_kb": 3943.3
+    },
+    {
+      "state_code": 5,
+      "state_name": "Uttarakhand",
+      "district_count": 13,
+      "mandal_count": 129,
+      "village_count": 17343,
+      "size_kb": 583.4
+    },
+    {
+      "state_code": 19,
+      "state_name": "West Bengal",
+      "district_count": 22,
+      "mandal_count": 345,
+      "village_count": 41005,
+      "size_kb": 1445.9
+    }
+  ]
+}

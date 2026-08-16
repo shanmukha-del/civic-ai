@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "process-lgd": "node scripts/process-lgd-data.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
