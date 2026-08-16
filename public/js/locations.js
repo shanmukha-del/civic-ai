@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /**
  * CivicAI - Real LGD Administrative Location Module (Andhra Pradesh & Telangana)
  * Source: Official Local Government Directory (LGD) Dataset (As of 2 July 2026)
@@ -59,11 +60,27 @@ function getLocalizedName(name) {
 /**
  * Initializes the State dropdown and sets dependent dropdowns to initial disabled state
  */
+=======
+let locationData = {};
+
+// Load real geographical data asynchronously
+async function loadRealLocationData() {
+  try {
+    const res = await fetch('/locations.json');
+    locationData = await res.json();
+    initCascadingLocations();
+  } catch (err) {
+    console.error('Failed to load real LGD location dataset:', err);
+  }
+}
+
+>>>>>>> 381a45a3e0add81526322310d1753d6629b24970
 function initCascadingLocations() {
   const stateSel = document.getElementById('stateSelect');
   const distSel = document.getElementById('districtSelect');
   const mandalSel = document.getElementById('mandalSelect');
   const villSel = document.getElementById('villageSelect');
+<<<<<<< HEAD
 
   if (!stateSel) return;
 
@@ -75,11 +92,23 @@ function initCascadingLocations() {
     const opt = document.createElement('option');
     opt.value = st;
     opt.textContent = getLocalizedName(st);
+=======
+  if (!stateSel) return;
+
+  stateSel.innerHTML = '<option value="">-- Select State --</option>';
+  Object.keys(locationData).sort().forEach(st => {
+    const opt = document.createElement('option');
+    opt.value = st;
+    opt.textContent = st;
+>>>>>>> 381a45a3e0add81526322310d1753d6629b24970
     stateSel.appendChild(opt);
   });
 
   stateSel.value = "";
+<<<<<<< HEAD
 
+=======
+>>>>>>> 381a45a3e0add81526322310d1753d6629b24970
   if (distSel) {
     distSel.innerHTML = '<option value="">-- Select State First --</option>';
     distSel.disabled = true;
@@ -92,6 +121,7 @@ function initCascadingLocations() {
     villSel.innerHTML = '<option value="">-- Select Mandal First --</option>';
     villSel.disabled = true;
   }
+<<<<<<< HEAD
 
   const mandalInp = document.getElementById('mandalInput');
   const villInp = document.getElementById('villageInput');
@@ -309,3 +339,12 @@ if (document.readyState === 'loading') {
 } else {
   loadRealLocationData();
 }
+=======
+}
+
+// Replace initCascadingLocations() call inside DOMContentLoaded with:
+document.addEventListener('DOMContentLoaded', () => {
+  // ... other inits ...
+  loadRealLocationData();
+});
+>>>>>>> 381a45a3e0add81526322310d1753d6629b24970
