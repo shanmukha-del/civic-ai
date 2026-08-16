@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /**
  * CivicAI - Real LGD Administrative Location Module (Andhra Pradesh & Telangana)
  * Source: Official Local Government Directory (LGD) Dataset (As of 2 July 2026)
@@ -60,55 +59,29 @@ function getLocalizedName(name) {
 /**
  * Initializes the State dropdown and sets dependent dropdowns to initial disabled state
  */
-=======
-let locationData = {};
-
-// Load real geographical data asynchronously
-async function loadRealLocationData() {
-  try {
-    const res = await fetch('/locations.json');
-    locationData = await res.json();
-    initCascadingLocations();
-  } catch (err) {
-    console.error('Failed to load real LGD location dataset:', err);
-  }
-}
-
->>>>>>> 381a45a3e0add81526322310d1753d6629b24970
 function initCascadingLocations() {
   const stateSel = document.getElementById('stateSelect');
   const distSel = document.getElementById('districtSelect');
   const mandalSel = document.getElementById('mandalSelect');
   const villSel = document.getElementById('villageSelect');
-<<<<<<< HEAD
 
   if (!stateSel) return;
+
+  const currentLocData = window.locationData && Object.keys(window.locationData).length > 0 ? window.locationData : locationData;
 
   // Clear and populate states
   stateSel.innerHTML = '<option value="">-- Select State --</option>';
   
-  const states = Object.keys(locationData).sort();
+  const states = Object.keys(currentLocData).sort();
   states.forEach(st => {
     const opt = document.createElement('option');
     opt.value = st;
     opt.textContent = getLocalizedName(st);
-=======
-  if (!stateSel) return;
-
-  stateSel.innerHTML = '<option value="">-- Select State --</option>';
-  Object.keys(locationData).sort().forEach(st => {
-    const opt = document.createElement('option');
-    opt.value = st;
-    opt.textContent = st;
->>>>>>> 381a45a3e0add81526322310d1753d6629b24970
     stateSel.appendChild(opt);
   });
 
   stateSel.value = "";
-<<<<<<< HEAD
 
-=======
->>>>>>> 381a45a3e0add81526322310d1753d6629b24970
   if (distSel) {
     distSel.innerHTML = '<option value="">-- Select State First --</option>';
     distSel.disabled = true;
@@ -121,7 +94,6 @@ function initCascadingLocations() {
     villSel.innerHTML = '<option value="">-- Select Mandal First --</option>';
     villSel.disabled = true;
   }
-<<<<<<< HEAD
 
   const mandalInp = document.getElementById('mandalInput');
   const villInp = document.getElementById('villageInput');
@@ -139,11 +111,12 @@ function onStateChanged() {
   const villSel = document.getElementById('villageSelect');
 
   const selectedState = stateSel ? stateSel.value : '';
+  const currentLocData = window.locationData && Object.keys(window.locationData).length > 0 ? window.locationData : locationData;
 
   // Reset internal state
   window.selectedLocation = {
     stateName: selectedState,
-    stateCode: (selectedState && locationData[selectedState]) ? locationData[selectedState].state_code : '',
+    stateCode: (selectedState && currentLocData[selectedState]) ? currentLocData[selectedState].state_code : '',
     districtName: '',
     districtCode: '',
     mandalName: '',
@@ -171,14 +144,14 @@ function onStateChanged() {
   if (mandalInp) mandalInp.value = "";
   if (villInp) villInp.value = "";
 
-  if (!selectedState || !locationData[selectedState]) {
+  if (!selectedState || !currentLocData[selectedState]) {
     if (distSel) distSel.innerHTML = '<option value="">-- Select State First --</option>';
     if (typeof geocodeLocationAndLocateMap === 'function') geocodeLocationAndLocateMap();
     return;
   }
 
   // Populate Districts for selected state ONLY
-  const districtsObj = locationData[selectedState].districts || {};
+  const districtsObj = currentLocData[selectedState].districts || {};
   const districtList = Object.keys(districtsObj).sort();
 
   districtList.forEach(dist => {
@@ -202,11 +175,12 @@ function onDistrictChanged() {
 
   const selectedState = stateSel ? stateSel.value : '';
   const selectedDist = distSel ? distSel.value : '';
+  const currentLocData = window.locationData && Object.keys(window.locationData).length > 0 ? window.locationData : locationData;
 
   // Update selected location
   window.selectedLocation.districtName = selectedDist;
-  if (selectedState && selectedDist && locationData[selectedState] && locationData[selectedState].districts[selectedDist]) {
-    window.selectedLocation.districtCode = locationData[selectedState].districts[selectedDist].code;
+  if (selectedState && selectedDist && currentLocData[selectedState] && currentLocData[selectedState].districts[selectedDist]) {
+    window.selectedLocation.districtCode = currentLocData[selectedState].districts[selectedDist].code;
   } else {
     window.selectedLocation.districtCode = '';
   }
@@ -230,14 +204,14 @@ function onDistrictChanged() {
   if (mandalInp) mandalInp.value = "";
   if (villInp) villInp.value = "";
 
-  if (!selectedState || !selectedDist || !locationData[selectedState] || !locationData[selectedState].districts[selectedDist]) {
+  if (!selectedState || !selectedDist || !currentLocData[selectedState] || !currentLocData[selectedState].districts[selectedDist]) {
     if (mandalSel) mandalSel.innerHTML = '<option value="">-- Select District First --</option>';
     if (typeof geocodeLocationAndLocateMap === 'function') geocodeLocationAndLocateMap();
     return;
   }
 
   // Populate Mandals for selected district ONLY
-  const mandalsObj = locationData[selectedState].districts[selectedDist].mandals || {};
+  const mandalsObj = currentLocData[selectedState].districts[selectedDist].mandals || {};
   const mandalList = Object.keys(mandalsObj).sort();
 
   mandalList.forEach(m => {
@@ -264,13 +238,14 @@ function onMandalChanged() {
   const selectedState = stateSel ? stateSel.value : '';
   const selectedDist = distSel ? distSel.value : '';
   const selectedMandal = mandalSel ? mandalSel.value : '';
+  const currentLocData = window.locationData && Object.keys(window.locationData).length > 0 ? window.locationData : locationData;
 
   if (mandalInp) mandalInp.value = selectedMandal;
   if (villInp) villInp.value = "";
 
   window.selectedLocation.mandalName = selectedMandal;
-  if (selectedState && selectedDist && selectedMandal && locationData[selectedState]?.districts[selectedDist]?.mandals[selectedMandal]) {
-    window.selectedLocation.mandalCode = locationData[selectedState].districts[selectedDist].mandals[selectedMandal].code;
+  if (selectedState && selectedDist && selectedMandal && currentLocData[selectedState]?.districts[selectedDist]?.mandals[selectedMandal]) {
+    window.selectedLocation.mandalCode = currentLocData[selectedState].districts[selectedDist].mandals[selectedMandal].code;
   } else {
     window.selectedLocation.mandalCode = '';
   }
@@ -282,14 +257,14 @@ function onMandalChanged() {
     villSel.disabled = !selectedMandal;
   }
 
-  if (!selectedState || !selectedDist || !selectedMandal || !locationData[selectedState]?.districts[selectedDist]?.mandals[selectedMandal]) {
+  if (!selectedState || !selectedDist || !selectedMandal || !currentLocData[selectedState]?.districts[selectedDist]?.mandals[selectedMandal]) {
     if (villSel) villSel.innerHTML = '<option value="">-- Select Mandal First --</option>';
     if (typeof geocodeLocationAndLocateMap === 'function') geocodeLocationAndLocateMap();
     return;
   }
 
   // Populate Villages for selected mandal ONLY
-  const villagesArr = locationData[selectedState].districts[selectedDist].mandals[selectedMandal].villages || [];
+  const villagesArr = currentLocData[selectedState].districts[selectedDist].mandals[selectedMandal].villages || [];
   
   // Sort villages alphabetically by name
   const sortedVillages = [...villagesArr].sort((a, b) => a.name.localeCompare(b.name));
@@ -339,12 +314,3 @@ if (document.readyState === 'loading') {
 } else {
   loadRealLocationData();
 }
-=======
-}
-
-// Replace initCascadingLocations() call inside DOMContentLoaded with:
-document.addEventListener('DOMContentLoaded', () => {
-  // ... other inits ...
-  loadRealLocationData();
-});
->>>>>>> 381a45a3e0add81526322310d1753d6629b24970
